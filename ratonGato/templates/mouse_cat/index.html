@@ -3,6 +3,15 @@
 {% load staticfiles %}
 
 {% block content %}
+<div class="Services_sec" id="services">
+    <div class="Center">
+        <h2>Welcome to our Mouse&Cats app!</h2>
+        <p>Read the manual to know how to use this app and use the menu above to start playing!</p>
+        <img class="Main" src="{% static 'img/mc_portada.jpg' %}" alt="Portada">
+        <div class="Line"></div>
+    </div>
+</div>
+<!--
 <div id="content">
     <h1>Service catalog</h1>
 
@@ -17,4 +26,5 @@
         <li><a href="{% url 'show_game' %}">Show selected game and play</a></li>
     </ul>
 </div>
+//-->
 {% endblock content %}

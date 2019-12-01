@@ -1,41 +1,138 @@
+<!DOCTYPE html>
 {% load staticfiles %}
-<html>
+<html lang="en">
+
 <head>
+    <meta charset="utf-8" />
+
+    <!-- Title Tag -->
+    <title>Mouse&Cats</title>
+<!--
+
+November Template
+
+http://www.templatemo.com/tm-473-november
+
+-->
+    <!-- <<Mobile Viewport Code>> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
     {% block extra_css %}
         <link rel="stylesheet" type="text/css" href="{% static 'styles/style.css' %}"/>
+
+    <!-- <<Attched Stylesheets>> -->
+    <link rel="stylesheet" href="{% static 'styles/theme.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'styles/media.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'styles/font-awesome.min.css' %}" type="text/css" />
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,600italic,400italic,800,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Oswald:400,700,300' rel='stylesheet' type='text/css'>
     {% endblock extra_css %}
 
     {% block extra_js %}
-
+    <!-- <<Attched Javascripts>> -->
+    <script type="text/javascript" src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/global.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/modernizr.js' %}"></script>
     {% endblock extra_js %}
 
-    {% block extra_head %}
-
-    {% endblock extra_head %}
-    <title>{% block title %}PSI 2019-2020: Example of application{% endblock %}</title>
 </head>
+<body>
 
-<body id="body">
-    <div id="totalheader">
-        <div id="title">
-            {% block atitle %}<h1>Mouse vs. Cats application</h1>{% endblock atitle %}
+<!-- \\ Begin Holder \\ -->
+<div class="DesignHolder">
+	<!-- \\ Begin Frame \\ -->
+	<div class="LayoutFrame">
+        <!-- \\ Begin Header \\ -->
+        <header>
+            <div class="Center">
+                <div class="site-logo">
+                	<h1><a href="{% url 'index' %}">Mouse<span>&</span>Cats</a></h1>
+                </div>
+               <div id="mobile_sec">
+               <div class="mobile"><i class="fa fa-bars"></i><i class="fa fa-times"></i></div>
+                <div class="menumobile">
+                    <!-- \\ Begin Navigation \\ -->
+                    <nav class="Navigation">
+                        <ul>
+                          {% if request.user.is_authenticated %}
+                            <li class="active">
+                                <a href="#home">Create<br>Game</a>
+                                <span class="menu-item-bg"></span>
+                            </li>
+                            <li>
+                                <a href="#about">Join<br>Game</a>
+                                <span class="menu-item-bg"></span>
+                            </li>
+                            <li>
+                                <a href="#services">Play<br>Game</a>
+                                <span class="menu-item-bg"></span>
+                            </li>
+                            <li>
+                                <a href="#pricing">Reproduce<br>Game</a>
+                                <span class="menu-item-bg"></span>
+                            </li>
+                            <li>
+                              <a href="{% url 'logout' %}">Welcome <b>{{ request.user.username }}</b>!<br>Logout</a>
+                              <span class="menu-item-bg"></span>
+                            </li>
+                      {% else %}
+                            <li>
+                              <a href="{% url 'login' %}">Login</a>
+                              <span class="menu-item-bg"></span>
+                            </li>
+                            <li>
+                              <a href="{% url 'signup' %}">Register</a>
+                              <span class="menu-item-bg"></span>
+                            </li>
+                      {% endif %}
+                        </ul>
+                    </nav>
+                    <!-- // End Navigation // -->
+				</div>
+				</div>
+                <div class="clear"></div>
+            </div>
+        </header>
+        <!-- // End Header // -->
+        <!-- \\ Begin Container \\ -->
+        <div id="Container">
+        <!-- \\ Begin Services Section \\ -->
+        {% block content %}
+        {% endblock content %}
         </div>
+        <!-- // End Services Section // -->
+        <!-- \\ Begin Contact Section \\ -->
+        <div class="Contact_sec" id="contact">
 
-        <div id="header">
-            {% if request.user.is_authenticated %}
-                Welcome <span class="username">{{ request.user.username }}</span>!
-            {% endif %}
+
+                <!-- \\ Begin Get Section \\ -->
+                <div class="Get_sec">
+
+                    <!-- \\ Begin Footer \\-->
+                    <footer>
+                        <div class="Cntr">
+                            <p>LOGIC: DAVID CABORNERO Y SERGIO GALÁN<br>DESIGN: <a rel="nofollow" href="http://www.templatemo.com" target="_parent">TEMPLATEMO</a><br>TEMPLATE: NOVEMBER</p>
+                        </div>
+                    </footer>
+                    <!-- // End Footer // -->
+                </div>
+                <!-- // End Get Section // -->
+
+            </div>
+            <!-- // End Contact Section // -->
         </div>
-    </div>
+        <!-- // End Container // -->
+	</div>
+	<!-- // End Layout Frame // -->
+</div>
+<!-- // End Design Holder // -->
+<div id="loader-wrapper">
+<div id="loader"></div>
 
-    <hr/>
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
 
-    {% block content %}
-    {% endblock content %}
+</div>
 
-    <hr/>
-
-    {% block footer %}
-    {% endblock footer %}
 </body>
 </html>
