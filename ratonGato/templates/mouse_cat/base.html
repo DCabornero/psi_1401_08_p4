@@ -56,15 +56,15 @@ http://www.templatemo.com/tm-473-november
                         <ul>
                           {% if request.user.is_authenticated %}
                             <li class="active">
-                                <a href="#home">Create<br>Game</a>
+                                <a href="{% url 'create_game' %}">Create<br>Game</a>
                                 <span class="menu-item-bg"></span>
                             </li>
                             <li>
-                                <a href="#about">Join<br>Game</a>
+                                <a href="{% url 'join_game' %}">Join<br>Game</a>
                                 <span class="menu-item-bg"></span>
                             </li>
                             <li>
-                                <a href="#services">Play<br>Game</a>
+                                <a href="{% url 'show_game' %}">Play<br>Game</a>
                                 <span class="menu-item-bg"></span>
                             </li>
                             <li>

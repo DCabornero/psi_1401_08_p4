@@ -166,7 +166,8 @@ def join_game(request):
                                    cat_user=request.user).order_by('-id')[0]
     except IndexError:
         # Si no hay juego disponible, informamos al usuario
-        context_dict['msg_error'] = 'There is no available games'
+        context_dict['msg_error'] = 'Sorry, there is no available game. \
+                                     Try creating one yourself!'
         return render(request, "mouse_cat/join_game.html", context_dict)
     # Actualizamos los datos del juego
     game.mouse_user = request.user
