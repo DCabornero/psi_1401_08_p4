@@ -181,28 +181,28 @@ def select_game(request, type, game_id=None):
     # Author: Sergio Galán
     context_dict = {}
     # Si la petición viene con el parámetro id
-    if game_id is not None:
-        # Buscamos el juego con ese id
-        try:
-            g = Game.objects.get(pk=game_id)
-        # Salvo que no exista o no cumpla las condiciones siguientes
-        except Game.DoesNotExist:
-            return errorHTTP(request, "No game with id = {0} \
-                                       in the database".format(game_id))
-        # No se puede jugar un juego que no tenga status ACTIVE
-        if g.status != GameStatus.ACTIVE:
-            return errorHTTP(request, "Game with id = {0} \
-                                       is not active".format(game_id))
-        # No se puede jugar un juego en el que el usuario no sea uno de los
-        # jugadores
-        condition1 = g.mouse_user.id != request.user.id
-        condition2 = g.cat_user.id != request.user.id
-        if condition1 and condition2:
-            return errorHTTP(request, "You are not a player of the game \
-                                       with id = {0}".format(game_id))
-        request.session['game_selected'] = game_id
-        # Redireccionamos a la vista del juego seleccionado
-        return redirect(reverse('show_game'))
+    # if game_id is not None:
+    #     # Buscamos el juego con ese id
+    #     try:
+    #         g = Game.objects.get(pk=game_id)
+    #     # Salvo que no exista o no cumpla las condiciones siguientes
+    #     except Game.DoesNotExist:
+    #         return errorHTTP(request, "No game with id = {0} \
+    #                                    in the database".format(game_id))
+    #     # No se puede jugar un juego que no tenga status ACTIVE
+    #     if g.status != GameStatus.ACTIVE:
+    #         return errorHTTP(request, "Game with id = {0} \
+    #                                    is not active".format(game_id))
+    #     # No se puede jugar un juego en el que el usuario no sea uno de los
+    #     # jugadores
+    #     condition1 = g.mouse_user.id != request.user.id
+    #     condition2 = g.cat_user.id != request.user.id
+    #     if condition1 and condition2:
+    #         return errorHTTP(request, "You are not a player of the game \
+    #                                    with id = {0}".format(game_id))
+    #     request.session['game_selected'] = game_id
+    #     # Redireccionamos a la vista del juego seleccionado
+    #     return redirect(reverse('show_game'))
     # Si viene sin el parametro id, ofrecemos una lista de juegos disponibles
     # diferenciados por el puesto vacante (gato o ratón)
     else:
@@ -216,6 +216,9 @@ def select_game(request, type, game_id=None):
         elif type == "join":
             available = Game.objects.filter(status=GameStatus.CREATED).exclude(cat_user=user)
             context_dict['available_games'] = list(available)
+            return render(request, "mouse_cat/join_game.html", context_dict)
+        elif type == "reproduce":
+            reproduzable = Game.objects.filter(status=GameStatus.FINISHED, )
 
 
 @login_required
