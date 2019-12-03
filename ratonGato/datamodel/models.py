@@ -63,6 +63,65 @@ class Game(models.Model):
     cat_turn = models.BooleanField(blank=True, default=True)
     status = GameStatus(blank=True, default=GameStatus.CREATED)
 
+    # Devuelve "cat" si ganan los gatos, "mouse" si gana el ratón, None si
+    # la partida no cumple las condiciones de finalización
+    def finish(self):
+        m = self.mouse
+        c1 = self.cat1
+        c2 = self.cat2
+        c3 = self.cat3
+        c4 = self.cat4
+        m = [(m//Game.ROW_LEN)+1, (m % Game.ROW_LEN)+1]
+        c1 = [(c1//Game.ROW_LEN)+1, (c1 % Game.ROW_LEN)+1]
+        c2 = [(c2//Game.ROW_LEN)+1, (c2 % Game.ROW_LEN)+1]
+        c3 = [(c3//Game.ROW_LEN)+1, (c3 % Game.ROW_LEN)+1]
+        c4 = [(c4//Game.ROW_LEN)+1, (c4 % Game.ROW_LEN)+1]
+        # Guardamos las coordenadas de los cuatro gatos
+        cats = [c1, c2, c3, c4]
+        valid_targets = [[m[0]-1, (m[1]-1) % (Game.ROW_LEN + 1)],
+                         [m[0]-1, (m[1]+1) % (Game.ROW_LEN + 1)],
+                         [m[0]+1, (m[1]-1) % (Game.ROW_LEN + 1)],
+                         [m[0]+1, (m[1]+1) % (Game.ROW_LEN + 1)]]
+        valid_targets_filtered = []
+        is_mouse_notloser = 0
+        for t in valid_targets:
+            flag = 0
+            if t[0] <= Game.COL_LEN and t[0] >= 1 and t[1] != 0:
+                # Nos quedamos con los movimientos que se quedan dentro del
+                # tablero
+                for cat in cats:
+                    # Miramos si el objetivo no está ocupado por un gato
+                    if cat[0] == t[0] and cat[1] == t[1]:
+                        flag = 1
+                        break
+                if flag == 0:
+                    is_mouse_notloser = 1
+                    break
+        if not is_mouse_notloser:
+            return "cat"
+        # Ahora tenemos que ver si ha ganado el ratón, es decir que ningún
+        # gato tiene movimientos disponibles
+        others = [c1, c2, c3, c4, m]
+        for cat in cats:
+            others.remove(cat)
+            valid_targets = [[cat[0]+1, (cat[1]-1) % (Game.ROW_LEN + 1)],
+                             [cat[0]+1, (cat[1]+1) % (Game.ROW_LEN + 1)]]
+            for t in valid_targets:
+                if t[0] <= Game.COL_LEN and t[0] >= 1 and t[1] != 0:
+                    # Nos quedamos con los movimientos que se quedan dentro del
+                    # tablero
+                    for other in others:
+                        # Miramos si el objetivo no está ocupado por otra
+                        # entidad
+                        if other[0] != t[0] or other[1] != t[1]:
+                            # Hay algún movimiento posible para algún gato
+                            # La partida no ha acabado
+                            return None
+            others.append(cat)
+        # Si llega aquí es que ha ganado el ratón por no tener ningún
+        # movimiento válido los gatos
+        return "mouse"
+
     def save(self, *args, **kwargs):
         # Hacemos una comprobación inicial de datos
         self.full_clean()
@@ -73,6 +132,11 @@ class Game(models.Model):
             # ... y se acaba de unir el jugador ratón, empieza el juego
             else:
                 self.status = GameStatus.ACTIVE
+        if self.status == GameStatus.ACTIVE:
+            winner = Game.finish()
+            if winner:
+                self.status = GameStatus.FINISHED       
+
         return super(Game, self).save(*args, **kwargs)
 
     # Ejemplo de String que respresenta el juego:

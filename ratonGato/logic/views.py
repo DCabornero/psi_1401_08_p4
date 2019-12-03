@@ -177,7 +177,7 @@ def join_game(request):
 
 
 @login_required
-def select_game(request, game_id=None):
+def select_game(request, type, game_id=None):
     # Author: Sergio Galán
     context_dict = {}
     # Si la petición viene con el parámetro id
@@ -207,11 +207,15 @@ def select_game(request, game_id=None):
     # diferenciados por el puesto vacante (gato o ratón)
     else:
         u = request.user
-        as_cat = Game.objects.filter(status=GameStatus.ACTIVE, cat_user=u)
-        as_mouse = Game.objects.filter(status=GameStatus.ACTIVE, mouse_user=u)
-        context_dict['as_cat'] = list(as_cat)
-        context_dict['as_mouse'] = list(as_mouse)
-        return render(request, "mouse_cat/select_game.html", context_dict)
+        if type == "play":
+            as_cat = Game.objects.filter(status=GameStatus.ACTIVE, cat_user=u)
+            as_mouse = Game.objects.filter(status=GameStatus.ACTIVE, mouse_user=u)
+            context_dict['as_cat'] = list(as_cat)
+            context_dict['as_mouse'] = list(as_mouse)
+            return render(request, "mouse_cat/select_game.html", context_dict)
+        elif type == "join":
+            available = Game.objects.filter(status=GameStatus.CREATED).exclude(cat_user=user)
+            context_dict['available_games'] = list(available)
 
 
 @login_required
