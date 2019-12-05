@@ -6,8 +6,11 @@ http://www.templatemo.com/tm-473-november
 
 */
 
-@media only screen and (min-width: 769px) and (max-width: 10000px) {
+/* @media only screen and (min-width: 769px) and (max-width: 10000px) { */
+@media only screen and (min-width: 969px) and (max-width: 10000px) {
 	#mobile_sec .menumobile { display: block!important; }
+
+	html, body , .LayoutFrame, .DesignHolder, #Container, #Services{height:98%; }
 }
 
 @media only screen and (min-width: 1025px) and (max-width: 1200px) {
@@ -35,7 +38,7 @@ http://www.templatemo.com/tm-473-november
 	.Banner_sec .rightside .prevBtn { top: 160px; }
 	.Banner_sec .rightside .nextBtn { top: 160px; }
 
-	#Container { width: 100%; }
+	#Container { width: 100%; height:98%; }
 
 	.Services_sec { width: 100%; padding: 70px 0px; }
 	.Services_sec .Center { width: 100%; padding: 0px 2%; }
@@ -85,7 +88,7 @@ http://www.templatemo.com/tm-473-november
 	.Banner_sec .rightside .prevBtn { top: 100px; left: 10px; }
 	.Banner_sec .rightside .nextBtn { top: 100px; right: 10px; }
 
-	#Container { width: 100%; }
+	#Container { width: 100%; height:98%; }
 
 	.Services_sec { width: 100%; padding: 70px 0px 30px 0px; }
 	.Services_sec .Center { width: 100%; padding: 0px 2%; }
@@ -136,7 +139,8 @@ http://www.templatemo.com/tm-473-november
 }
 
 /* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
-@media only screen and (min-width: 480px) and (max-width: 767px) {
+/* @media only screen and (min-width: 480px) and (max-width: 767px) { */
+@media only screen and (min-width: 480px) and (max-width: 967px) {
 
 	header { width: 100%; position: absolute; height: 57px;}
 	header .Center { width: 100%;  }
@@ -174,7 +178,7 @@ http://www.templatemo.com/tm-473-november
 
 	.bgcolor { height: 50px; }
 
-	#Container { width: 100%; }
+	#Container { width: 100%; height:98%; }
 
 
 	.Services_sec { width: 100%; padding: 100px 0px 30px; }
@@ -257,7 +261,7 @@ http://www.templatemo.com/tm-473-november
 
 	.bgcolor { height: 50px; }
 
-	#Container { width: 100%; }
+	#Container { width: 100%; height:98%; }
 
 	.About_sec,
 	.Services_sec,
@@ -308,7 +312,8 @@ http://www.templatemo.com/tm-473-november
 		height: 60px;
 	}
 }
-@media only screen and (max-width: 767px) {
+/* @media only screen and (max-width: 767px) { */
+@media only screen and (max-width: 967px) {
 	header {
 		height: 55px;
 		position: fixed;

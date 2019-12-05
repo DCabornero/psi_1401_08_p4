@@ -205,20 +205,20 @@ def select_game(request, type, game_id=None):
     #     return redirect(reverse('show_game'))
     # Si viene sin el parametro id, ofrecemos una lista de juegos disponibles
     # diferenciados por el puesto vacante (gato o ratón)
-    else:
-        u = request.user
-        if type == "play":
-            as_cat = Game.objects.filter(status=GameStatus.ACTIVE, cat_user=u)
-            as_mouse = Game.objects.filter(status=GameStatus.ACTIVE, mouse_user=u)
-            context_dict['as_cat'] = list(as_cat)
-            context_dict['as_mouse'] = list(as_mouse)
-            return render(request, "mouse_cat/select_game.html", context_dict)
-        elif type == "join":
-            available = Game.objects.filter(status=GameStatus.CREATED).exclude(cat_user=user)
-            context_dict['available_games'] = list(available)
-            return render(request, "mouse_cat/join_game.html", context_dict)
-        elif type == "reproduce":
-            reproduzable = Game.objects.filter(status=GameStatus.FINISHED, )
+    #else:
+    u = request.user
+    if type == "play":
+        as_cat = Game.objects.filter(status=GameStatus.ACTIVE, cat_user=u)
+        as_mouse = Game.objects.filter(status=GameStatus.ACTIVE, mouse_user=u)
+        context_dict['as_cat'] = list(as_cat)
+        context_dict['as_mouse'] = list(as_mouse)
+        return render(request, "mouse_cat/select_game.html", context_dict)
+    elif type == "join":
+        available = Game.objects.filter(status=GameStatus.CREATED).exclude(cat_user=user)
+        context_dict['available_games'] = list(available)
+        return render(request, "mouse_cat/join_game.html", context_dict)
+    elif type == "reproduce":
+        reproduzable = Game.objects.filter(status=GameStatus.FINISHED)
 
 
 @login_required

@@ -102,7 +102,8 @@ header.smaller .Navigation li { height: 60px; }
 .mobile.closed .fa-times { display: block; }
 
 /* <<< Banner Section >>> */
-.Banner_sec { width: 100%; background: url(../img/Banner-bg.jpg) top center no-repeat; height: 687px; position: relative; background-size: cover; }
+/* .Banner_sec { width: 100%; background: url(../img/Banner-bg.jpg) top center no-repeat; height: 687px; position: relative; background-size: cover; } */
+/* .Banner_sec { width: 100%; height: 10000px;  background: url(../img/Banner-bg.jpg);} */
 .Banner_sec .bannerside { width: 100%; position: absolute; top: 256px; left: 0px; }
 .Banner_sec .Center { max-width: 1100px; margin: auto; }
 .Banner_sec .leftside { padding: 92px 0px 0px 0px; width: 28.90%; float: left; }
@@ -146,7 +147,8 @@ header.smaller .Navigation li { height: 60px; }
 
 
 	/* <<< Services Section >>> */
-	.Services_sec{ padding: 114px 0px 334px 0px ; width: 100%; overflow: hidden; background: url(../img/Services-bg.jpg) top center no-repeat; background-size: cover; }
+	/* .Services_sec{ padding: 114px 0px 334px 0px ; width: 100%; overflow: hidden; background: url(../img/Services-bg.jpg) top center no-repeat; background-size: cover; } */
+	.Services_sec{ padding: 114px 0px 334px 0px ; width: 100%; height: 100%; overflow: hidden; background: url(../img/Services-bg.jpg) top center no-repeat; background-size: cover; }
 	.Services_sec .Center { max-width: 1100px; margin: auto; overflow: hidden; text-align: center; }
 	.Services_sec h2 { font-size: 56px; color: #fff; font-family: 'Oswald', sans-serif; font-weight: 400; margin: 0px; text-transform: uppercase; line-height: 60px; }
 	.Services_sec p { padding: 25px 0px 35px 0px; font-size: 16px; color: #d8dfe5; margin: 0px; font-family: 'Open Sans', sans-serif; line-height: 25px; font-weight: 400; }
