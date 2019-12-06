@@ -42,11 +42,11 @@
               <li>
                 <table class="tg dcf-table dcf-table-responsive dcf-table-bordered dcf-table-striped">
                   <tr>
-                    <th class="tg-7btt">{{game.cat_user}}</th>
+                    <th class="tg-7btt" style="background-color:navy">{{game.cat_user}}</th>
                     {% if type != "join" %}
-                      <th class="tg-7btt">{{game.mouse_user}}</th>
+                      <th class="tg-7btt" style="background-color:lightblue;">{{game.mouse_user}}</th>
                     {% else %}
-                      <th class="tg-7btt">Free</th>
+                      <th class="tg-7btt" style="background-color:lightblue;">Free</th>
                     {% endif %}
                     <th class="tg-c3ow" rowspan="3"><br>Game: {{game.id}}<br><a class="Choosebutton" href="{% url 'select_game' type game.id%}">
                       {% if type == "join" %}
