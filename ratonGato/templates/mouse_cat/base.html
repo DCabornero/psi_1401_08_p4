@@ -21,6 +21,13 @@ http://www.templatemo.com/tm-473-november
         <link rel="stylesheet" type="text/css" href="{% static 'styles/style.css' %}"/>
 
     <!-- <<Attched Stylesheets>> -->
+    <style type="text/css">
+    .tg  {border-collapse:collapse;border-spacing:0;}
+    .tg td{font-family:Oswald, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+    .tg th{font-family:Oswald, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+    .tg .tg-c3ow{border-color:inherit;text-align:center;vertical-align:top}
+    .tg .tg-7btt{font-weight:bold;border-color:inherit;text-align:center;vertical-align:top}
+    </style>
     <link rel="stylesheet" href="{% static 'styles/theme.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'styles/media.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'styles/font-awesome.min.css' %}" type="text/css" />
@@ -55,20 +62,20 @@ http://www.templatemo.com/tm-473-november
                     <nav class="Navigation">
                         <ul>
                           {% if request.user.is_authenticated %}
-                            <li class="active">
+                            <li>
                                 <a href="{% url 'create_game' %}">Create<br>Game</a>
                                 <span class="menu-item-bg"></span>
                             </li>
                             <li>
-                                <a href="{% url 'join_game' %}">Join<br>Game</a>
+                                <a href="{% url 'select_game' 'join'%}">Join<br>Game</a>
                                 <span class="menu-item-bg"></span>
                             </li>
                             <li>
-                                <a href="{% url 'show_game' %}">Play<br>Game</a>
+                                <a href="{% url 'select_game' 'play'%}">Play<br>Game</a>
                                 <span class="menu-item-bg"></span>
                             </li>
                             <li>
-                                <a href="#pricing">Reproduce<br>Game</a>
+                                <a href="{% url 'select_game' 'reproduce'%}">Reproduce<br>Game</a>
                                 <span class="menu-item-bg"></span>
                             </li>
                             <li>

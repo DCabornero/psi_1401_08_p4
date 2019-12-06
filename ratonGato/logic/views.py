@@ -155,25 +155,25 @@ def create_game(request):
     return render(request, "mouse_cat/new_game.html", context_dict)
 
 
-@login_required
-def join_game(request):
-    # Author: David Cabornero
-    context_dict = {}
-    try:
-        # Buscamos el juego con id más alto con status CREATED en el que
-        # nuestro usuario no es el gato
-        game = Game.objects.filter(mouse_user__isnull=True).exclude(
-                                   cat_user=request.user).order_by('-id')[0]
-    except IndexError:
-        # Si no hay juego disponible, informamos al usuario
-        context_dict['msg_error'] = 'Sorry, there is no available game. \
-                                     Try creating one yourself!'
-        return render(request, "mouse_cat/join_game.html", context_dict)
-    # Actualizamos los datos del juego
-    game.mouse_user = request.user
-    game.save()
-    context_dict['game'] = game
-    return render(request, "mouse_cat/join_game.html", context_dict)
+# @login_required
+# def join_game(request):
+#     # Author: David Cabornero
+#     context_dict = {}
+#     try:
+#         # Buscamos el juego con id más alto con status CREATED en el que
+#         # nuestro usuario no es el gato
+#         game = Game.objects.filter(mouse_user__isnull=True).exclude(
+#                                    cat_user=request.user).order_by('-id')[0]
+#     except IndexError:
+#         # Si no hay juego disponible, informamos al usuario
+#         context_dict['msg_error'] = 'Sorry, there is no available game. \
+#                                      Try creating one yourself!'
+#         return render(request, "mouse_cat/join_game.html", context_dict)
+#     # Actualizamos los datos del juego
+#     game.mouse_user = request.user
+#     game.save()
+#     context_dict['game'] = game
+#     return render(request, "mouse_cat/join_game.html", context_dict)
 
 
 @login_required
@@ -207,29 +207,67 @@ def select_game(request, type, game_id=None):
     # diferenciados por el puesto vacante (gato o ratón)
     #else:
     u = request.user
-    if type == "play":
-        as_cat = Game.objects.filter(status=GameStatus.ACTIVE, cat_user=u)
-        as_mouse = Game.objects.filter(status=GameStatus.ACTIVE, mouse_user=u)
-        context_dict['as_cat'] = list(as_cat)
-        context_dict['as_mouse'] = list(as_mouse)
-        return render(request, "mouse_cat/select_game.html", context_dict)
-    elif type == "join":
-        available = Game.objects.filter(status=GameStatus.CREATED).exclude(cat_user=user)
-        context_dict['available_games'] = list(available)
-        return render(request, "mouse_cat/join_game.html", context_dict)
-    elif type == "reproduce":
-        reproduzable = Game.objects.filter(status=GameStatus.FINISHED)
+    if game_id is not None:
+        try:
+            g = Game.objects.get(pk=game_id)
+        except Game.DoesNotExist:
+            return errorHTTP(request, "Game number {0} does not exist, please try again.".format(game_id))
+        if type == "play":
+            if g.cat_user.id != u.id and g.mouse_user.id != u.id:
+                return errorHTTP(request, "You are not a player of game number {0}, please try again.".format(game_id))
+            if g.status != GameStatus.ACTIVE:
+                return errorHTTP(request, "Game number {0} is not active, you can't play. Please try again.".format(game_id))
+            request.session[constants.GAME_SELECTED_SESSION_ID] = g.id
+            return(redirect(reverse('show_game', args=(type,))))
+        if type == "join":
+            if g.mouse_user:
+                return errorHTTP(request, "Game number {0} is already full, please try again.".format(game_id))
+            if g.cat_user.id == u.id:
+                return errorHTTP(request, "You can't join a game you created, please try again.".format(game_id))
+            g.mouse_user = u
+            g.save()
+            request.session[constants.GAME_SELECTED_SESSION_ID] = g.id
+            return(redirect(reverse('show_game', args=("play",))))
+        if type == 'reproduce':
+            if g.cat_user.id != u.id and g.mouse_user.id != u.id:
+                return errorHTTP(request, "You are not a player of game number {0}, please try again.".format(game_id))
+            if g.status != GameStatus.FINISHED:
+                return errorHTTP(request, "Game number {0} is not finished, you can't reproduce it. Please try again.".format(game_id))
+            request.session[constants.GAME_SELECTED_SESSION_ID] = g.id
+            return(redirect(reverse('show_game', args=(type,))))
+    else:
+        if type == "play":
+            as_cat = Game.objects.filter(status=GameStatus.ACTIVE, cat_user=u)
+            as_mouse = Game.objects.filter(status=GameStatus.ACTIVE, mouse_user=u)
+            context_dict['games'] = list(as_cat)+list(as_mouse)
+            context_dict['type'] = 'play'
+            return render(request, "mouse_cat/select_game.html", context_dict)
+        elif type == "join":
+            available = Game.objects.filter(status=GameStatus.CREATED).exclude(cat_user=u)
+            context_dict['games'] = list(available)
+            context_dict['type'] = 'join'
+            return render(request, "mouse_cat/select_game.html", context_dict)
+        elif type == "reproduce":
+            as_cat = Game.objects.filter(status=GameStatus.FINISHED, cat_user=u)
+            as_mouse = Game.objects.filter(status=GameStatus.FINISHED, mouse_user=u)
+            context_dict['games'] = list(as_cat)+list(as_mouse)
+            context_dict['type'] = 'reproduce'
+            return render(request, "mouse_cat/select_game.html", context_dict)
+    return errorHTTP(request, "Invalid url.")
 
 
 @login_required
-def show_game(request):
+def show_game(request, type):
     # Author: Sergio Galán
     context_dict = {}
     # Comprobamos si el usuario ha seleccionado un juego previamente
     if constants.GAME_SELECTED_SESSION_ID not in request.session:
         return errorHTTP(request, "You must select a game before!")
     pk = request.session[constants.GAME_SELECTED_SESSION_ID]
-    game = Game.objects.get(pk=pk)
+    try:
+        game = Game.objects.get(pk=pk)
+    except Game.DoesNotExist:
+        return errorHTTP(request, "Something went wrong, please try again.")
     # Diseñamos el tablero inicial
     board = [0]*64
     board[game.cat1] = 1
@@ -242,6 +280,7 @@ def show_game(request):
     context_dict['game'] = game
     context_dict['board'] = board
     context_dict['move_form'] = move_form
+    context_dict['type'] = type
     return render(request, "mouse_cat/game.html", context_dict)
 
 
@@ -268,7 +307,7 @@ def move(request):
                 move.save()
             except ValidationError:
                 return errorHTTP(request, "Move not allowed")
-            return redirect(reverse('show_game'))
+            return redirect(reverse('show_game', args=('play',)))
         else:
             # Imprimimos los errores del formulario
             return errorHTTP(request, form.errors)

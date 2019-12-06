@@ -8,20 +8,20 @@ http://www.templatemo.com/tm-473-november
 
 /* onScroll function
 ----------------------------------------*/
-function onScroll(event){
-  var scrollPosition = $(document).scrollTop();
-  $('nav li a').each(function () {
-    var currentLink = $(this);
-    var refElement = $(currentLink.attr("href"));
-    if (refElement.position().top <= scrollPosition && refElement.position().top + refElement.height() > scrollPosition) {
-      $('nav ul li').removeClass("active");
-      currentLink.parent().addClass("active");
-    }
-    else{
-      currentLink.parent().removeClass("active");
-    }
-  });
-}
+// function onScroll(event){
+//   var scrollPosition = $(document).scrollTop();
+//   $('nav li a').each(function () {
+//     var currentLink = $(this);
+//     var refElement = $(currentLink.attr("href"));
+//     if (refElement.position().top <= scrollPosition && refElement.position().top + refElement.height() > scrollPosition) {
+//       $('nav ul li').removeClass("active");
+//       currentLink.parent().addClass("active");
+//     }
+//     else{
+//       currentLink.parent().removeClass("active");
+//     }
+//   });
+// }
 
 /* HTML Document is loaded and DOM is ready.
 --------------------------------------------*/
@@ -86,7 +86,7 @@ $(document).ready(function(){
   });
 });
 
-$(document).on("scroll", onScroll);
+//$(document).on("scroll", onScroll);
 
 // Complete page is fully loaded, including all frames, objects and images
 $(window).load(function() {

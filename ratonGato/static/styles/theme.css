@@ -60,13 +60,13 @@ header .site-logo { padding: 30px 0px 0px 0px; width: 220px; float: left; transi
 header .site-logo h1 { margin: 0px; }
 header .site-logo h1 a { font-size: 36px; color: #fff; font-family: 'Open Sans', sans-serif; font-weight: 800; text-decoration: none; text-transform: uppercase; text-shadow: rgb(3, 3, 3) 0px 2px 5px; transition: all 0.7s ease;  }
 header .site-logo h1 a span { color: #ff9000; }
-header.smaller { padding: 0px 0px 0px 0px; height: 60px; transition: all 0.3s; background: rgba(0, 0, 0, 0.75); }
+/* header.smaller { padding: 0px 0px 0px 0px; height: 60px; transition: all 0.3s; background: rgba(0, 0, 0, 0.75); }
 header.smaller .site-logo {padding: 13px 0px 0px 0px; }
 header.smaller .site-logo h1 { line-height: 30px; }
-header.smaller .site-logo h1 a { font-size: 30px;  }
+header.smaller .site-logo h1 a { font-size: 30px;  } */
 
 /* <<< Navigation >>> */
-.Navigation { float: right; width: 68.18%; margin-right: 11px; }
+.Navigation { float: right; width: 68.18%;}
 .Navigation ul { list-style: none; margin: 0px; float: left; }
 .Navigation li { float: left; padding: 0px;  margin: 0px; height: 105px; position: relative; transition: all 0.3s ease; }
 .Navigation li a { padding: 42px 10px; font-size: 15px; color: #fff; font-family: 'Open Sans', sans-serif; font-weight: 400; text-decoration: none; display: block; -webkit-transition: all 0.3s ease; transition: all 0.3s ease; text-align: center; }
@@ -91,8 +91,9 @@ header.smaller .site-logo h1 a { font-size: 30px;  }
 	opacity: 1;
 }
 
+/* header.smaller .Navigation {margin-right: 11px;}
 header.smaller .Navigation li a { padding: 16px 41px; }
-header.smaller .Navigation li { height: 60px; }
+header.smaller .Navigation li { height: 60px; } */
 
 .mobile { display: none;  }
 .mobile .fa { padding: 12px 14px; font-size: 31px; width: 55px; height: 55px; color: #fff; cursor: pointer; background: #ff9408; }
@@ -148,7 +149,7 @@ header.smaller .Navigation li { height: 60px; }
 
 	/* <<< Services Section >>> */
 	/* .Services_sec{ padding: 114px 0px 334px 0px ; width: 100%; overflow: hidden; background: url(../img/Services-bg.jpg) top center no-repeat; background-size: cover; } */
-	.Services_sec{ padding: 114px 0px 334px 0px ; width: 100%; height: 100%; overflow: hidden; background: url(../img/Services-bg.jpg) top center no-repeat; background-size: cover; }
+	.Services_sec{ padding: 114px 0px 334px 0px ; width: 100%; overflow: hidden; background: url(../img/Services-bg.jpg) top center no-repeat; background-size: cover; }
 	.Services_sec .Center { max-width: 1100px; margin: auto; overflow: hidden; text-align: center; }
 	.Services_sec h2 { font-size: 56px; color: #fff; font-family: 'Oswald', sans-serif; font-weight: 400; margin: 0px; text-transform: uppercase; line-height: 60px; }
 	.Services_sec p { padding: 25px 0px 35px 0px; font-size: 16px; color: #d8dfe5; margin: 0px; font-family: 'Open Sans', sans-serif; line-height: 25px; font-weight: 400; }

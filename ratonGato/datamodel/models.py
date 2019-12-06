@@ -133,9 +133,9 @@ class Game(models.Model):
             else:
                 self.status = GameStatus.ACTIVE
         if self.status == GameStatus.ACTIVE:
-            winner = Game.finish()
+            winner = Game.finish(self)
             if winner:
-                self.status = GameStatus.FINISHED       
+                self.status = GameStatus.FINISHED
 
         return super(Game, self).save(*args, **kwargs)
 

@@ -7,10 +7,10 @@ http://www.templatemo.com/tm-473-november
 */
 
 /* @media only screen and (min-width: 769px) and (max-width: 10000px) { */
-@media only screen and (min-width: 969px) and (max-width: 10000px) {
+@media only screen and (min-width: 1067px) and (max-width: 10000px) {
 	#mobile_sec .menumobile { display: block!important; }
 
-	html, body , .LayoutFrame, .DesignHolder, #Container, #Services{height:98%; }
+	/* html, body , .LayoutFrame, .DesignHolder, #Container, #Services{height:80%; } */
 }
 
 @media only screen and (min-width: 1025px) and (max-width: 1200px) {
@@ -18,11 +18,11 @@ http://www.templatemo.com/tm-473-november
 	header { width: 100%; }
 	header .Center { width: 100%; padding: 0px 2%;  }
 	header .site-logo { padding: 18px 0 0 1px; }
-	header.smaller .site-logo { padding: 11px 0 0; }
+	/* header.smaller .site-logo { padding: 11px 0 0; } */
 
 	.Navigation { margin-right: 0px; }
 	.Navigation li a { padding: 30px 36px; }
-	header.smaller .Navigation li a { padding: 16px 36px; }
+	/* header.smaller .Navigation li a { padding: 16px 36px; } */
 
 
 	.Banner_sec { width: 100%; height: 524px; }
@@ -38,10 +38,10 @@ http://www.templatemo.com/tm-473-november
 	.Banner_sec .rightside .prevBtn { top: 160px; }
 	.Banner_sec .rightside .nextBtn { top: 160px; }
 
-	#Container { width: 100%; height:98%; }
+	#Container { width: 100%; height:80%; }
 
 	.Services_sec { width: 100%; padding: 70px 0px; }
-	.Services_sec .Center { width: 100%; padding: 0px 2%; }
+	.Services_sec .Center { width: 100%; padding: 2% 2%;}
 	.Services_sec p { font-size: 13px; }
 	.Services_sec .Serviceside { width: 100%; padding: 50px 0 30px; }
 	.Services_sec .Serviceside li { margin: 0px 2% 0px 0px; width: 23.5%; }
@@ -66,7 +66,7 @@ http://www.templatemo.com/tm-473-november
 	header .Center { width: 100%; padding: 0px 2%; }
 	header .site-logo { padding: 27px 0 0 1px;  position: relative; z-index: 1; }
 	header .site-logo h1 { line-height: 33px; }
-	header.smaller .Navigation li a { padding: 16px 20px; }
+	/* header.smaller .Navigation li a { padding: 16px 20px; } */
 
 	.Navigation {  margin-right: 0px; }
 	.Navigation li a { padding: 30px 20px; }
@@ -88,10 +88,10 @@ http://www.templatemo.com/tm-473-november
 	.Banner_sec .rightside .prevBtn { top: 100px; left: 10px; }
 	.Banner_sec .rightside .nextBtn { top: 100px; right: 10px; }
 
-	#Container { width: 100%; height:98%; }
+	#Container { width: 100%; height:80%; }
 
 	.Services_sec { width: 100%; padding: 70px 0px 30px 0px; }
-	.Services_sec .Center { width: 100%; padding: 0px 2%; }
+	.Services_sec .Center { width: 100%; padding: 2% 2%; }
 	.Services_sec h2 { font-size: 40px; line-height: 40px; }
 	.Services_sec p { padding: 15px 0px; font-size: 13px; }
 	.Services_sec .Serviceside { width: 100%; padding: 50px 0 30px; }
@@ -140,23 +140,23 @@ http://www.templatemo.com/tm-473-november
 
 /* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
 /* @media only screen and (min-width: 480px) and (max-width: 767px) { */
-@media only screen and (min-width: 480px) and (max-width: 967px) {
+@media only screen and (min-width: 480px) and (max-width: 1067px) {
 
 	header { width: 100%; position: absolute; height: 57px;}
 	header .Center { width: 100%;  }
 	header .site-logo { padding: 10px 0% 0px 3%; position: relative; z-index: 1; }
 	header .site-logo h1 { margin: 0px; line-height: 36px; }
-	header.smaller { height: 55px;}
+	/* header.smaller { height: 55px;}
 	header.smaller .site-logo { padding: 10px 0% 0px 3%; }
-	header.smaller .site-logo h1 a { font-size: 36px; }
+	header.smaller .site-logo h1 a { font-size: 36px; } */
 
 	#mobile_sec { position: fixed; width: 100%; }
 	#mobile_sec .mobile { display: block; position: relative; float: right;}
 	#mobile_sec .menumobile { display: none; width: 100%; position: absolute; top: 55px; right: 0%; background: rgba(0, 0, 0, 0.5);  }
 	#mobile_sec .menumobile .Navigation { width: 100%; float: none; }
 	#mobile_sec .menumobile .Navigation ul { float: none;}
-	#mobile_sec .menumobile .Navigation li { float: none; width: 100%; border-bottom: solid 1px #365374; }
-	#mobile_sec .menumobile .Navigation li a { padding: 0px 0px; background: none; border-bottom: none; }
+	#mobile_sec .menumobile .Navigation li { float: none; width: 100%; border-bottom: solid 1px #365374;}
+	#mobile_sec .menumobile .Navigation li a { padding: 0px 0px; background: none; border-bottom: none;}
 	#mobile_sec .menumobile .Navigation li:last-child { border-bottom: none; }
 
 
@@ -178,7 +178,7 @@ http://www.templatemo.com/tm-473-november
 
 	.bgcolor { height: 50px; }
 
-	#Container { width: 100%; height:98%; }
+	#Container { width: 100%; height:80%; }
 
 
 	.Services_sec { width: 100%; padding: 100px 0px 30px; }
@@ -223,9 +223,9 @@ http://www.templatemo.com/tm-473-november
 	header .Center { width: 100%;}
 	header .site-logo { padding: 10px 0% 0px 3%; position: relative; z-index: 1; }
 	header .site-logo h1 { margin: 0px; line-height: 36px; }
-	header.smaller { height: 55px;}
+	/* header.smaller { height: 55px;}
 	header.smaller .site-logo { padding: 10px 0% 0px 3%; }
-	header.smaller .site-logo h1 a { font-size: 36px; }
+	header.smaller .site-logo h1 a { font-size: 36px; } */
 
 	#mobile_sec { position: fixed; width: 100%;}
 	#mobile_sec .mobile { display: block; position: relative; float: right; }
@@ -261,7 +261,7 @@ http://www.templatemo.com/tm-473-november
 
 	.bgcolor { height: 50px; }
 
-	#Container { width: 100%; height:98%; }
+	#Container { width: 100%; height:80%; }
 
 	.About_sec,
 	.Services_sec,
@@ -307,13 +307,13 @@ http://www.templatemo.com/tm-473-november
 	.Navigation li:hover span,
 	.Navigation li.active span {
 		height: 87px; }
-	header.smaller .Navigation li:hover span,
+	/* header.smaller .Navigation li:hover span,
 	header.smaller .Navigation li.active span {
 		height: 60px;
-	}
+	} */
 }
 /* @media only screen and (max-width: 767px) { */
-@media only screen and (max-width: 967px) {
+@media only screen and (max-width: 1067px) {
 	header {
 		height: 55px;
 		position: fixed;
@@ -336,9 +336,9 @@ http://www.templatemo.com/tm-473-november
 		background: #FF9000 none repeat scroll 0% 0%;
 		border-bottom: medium none;
 	}
-	header.smaller .Navigation li {
+	/* header.smaller .Navigation li {
 		height: 45px;
-	}
+	} */
 	.Banner_sec .leftside a {
 		margin-top: 20px;
 		margin-bottom: 20px;

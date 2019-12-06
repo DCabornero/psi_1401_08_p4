@@ -1,8 +1,12 @@
 {% extends "mouse_cat/base.html" %}
+{% load staticfiles %}
+{% load logic_tags %}
 
 {% block content %}
-<div id="content">
-    <h1>Play</h1>
+<div class="Services_sec" id="services">
+  <div class="Center">
+    {% if type == "play" %}
+    <h2>Play</h2>
     <p>Game: <b>{{ game.id }}</b></p>
     <form id="move_form" method="post" action="{% url 'move' %}">
         {% csrf_token %}
@@ -14,8 +18,8 @@
                         {{ move_form }}
                         <input type="submit" value="Move" />
                     {% else %}
-                        Waiting for the mouse...
-                        <a style="margin-left:20px;font-weight:normal" href="{% url 'show_game' %}">Refresh</a>
+                        <p>Waiting for the mouse...
+                        <a style="margin-left:20px;font-weight:normal" href="{% url 'show_game' type %}">Refresh</a></p>
                     {% endif %}
                 </blockquote>
             {% endif %}
@@ -28,23 +32,36 @@
                         {{ move_form }}
                         <input type="submit" value="Move" />
                     {% else %}
-                        Waiting for the cat...
-                        <a style="margin-left:20px;font-weight:normal" href="{% url 'show_game' %}">Refresh</a>
+                        <p>Waiting for the cat...
+                        <a style="margin-left:20px;font-weight:normal" href="{% url 'show_game' type %}">Refresh</a></p>
                     {% endif %}
                 </blockquote>
             {% endif %}
         </p>
     </form>
+    {% elif type == "reproduce" %}
 
+    {% endif %}
     {% if board %}
-        <p>Board: {{ board }}</p>
-        <table id="chess_board">
+        <table id="chess_board" style="margin: 0 auto;">
         {% for item in board %}
             {% if forloop.counter0|divisibleby:8 %}<tr>{% endif %}
-            <td id="cell_{{ forloop.counter0}}"" style='width:20px;border:1px solid #000000;text-align:center;'>
-                {% if item ==  0 %}   x
-                {% elif item == 1 %}  &#9922;
-                {% else %}  &#9920; {% endif %}
+            {% if forloop.counter0|modulo:16 < 8 %}
+              {% if forloop.counter0|divisibleby:2 %}
+                <td id="cell_{{ forloop.counter0}}"" style='background-color:white;height:30px;width:30px;border:1px solid #000000;text-align:center;vertical-align:middle;'>
+              {% else %}
+                <td id="cell_{{ forloop.counter0}}"" style='background-color:black;height:30px;width:30px;border:1px solid #000000;text-align:center;vertical-align:middle;'>
+              {% endif %}
+            {% else %}
+              {% if forloop.counter0|divisibleby:2 and forloop.counter0|divisibleby:2 %}
+                <td id="cell_{{ forloop.counter0}}"" style='background-color:black;height:30px;width:30px;border:1px solid #000000;text-align:center;vertical-align:middle;'>
+              {% else %}
+                <td id="cell_{{ forloop.counter0}}"" style='background-color:white;height:30px;width:30px;border:1px solid #000000;text-align:center;vertical-align:middle;'>
+              {% endif %}
+            {% endif %}
+                {% if item ==  0 %}
+                {% elif item == 1 %}<img src="{% static 'img/resizecat.png' %}" alt="Cat">
+                {% else %}<img style='display:block;margin:0;' src="{% static 'img/resizemouse.png' %}" alt="Mouse">{% endif %}
             </td>
             {% if forloop.counter|divisibleby:8 or forloop.last %}</tr>{% endif %}
         {% endfor %}
@@ -52,5 +69,6 @@
     {% endif %}
 
     <p><a href="{% url 'landing' %}">Return to homepage</a></p>
+  </div>
 </div>
 {% endblock content %}

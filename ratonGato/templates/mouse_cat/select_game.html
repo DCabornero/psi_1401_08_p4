@@ -1,7 +1,8 @@
 {% extends "mouse_cat/base.html" %}
+{% load staticfiles %}
 
 {% block content %}
-<div id="content">
+<!-- <div id="content">
     <h1>Select game</h1>
     <p>
         {% if as_cat %}
@@ -28,7 +29,50 @@
             No games as mouse
         {% endif %}
     </p>
-    
+
     <p><a href="{% url 'landing' %}">Return to homepage</a></p>
+</div> -->
+
+<div class="Services_sec" id="services">
+  <div class="Center">
+    <h2>{{ type }} game</h2>
+    {% if games %}
+          <ul>
+            {% for game in games %}
+              <li>
+                <table class="tg dcf-table dcf-table-responsive dcf-table-bordered dcf-table-striped">
+                  <tr>
+                    <th class="tg-7btt">{{game.cat_user}}</th>
+                    {% if type != "join" %}
+                      <th class="tg-7btt">{{game.mouse_user}}</th>
+                    {% else %}
+                      <th class="tg-7btt">Free</th>
+                    {% endif %}
+                    <th class="tg-c3ow" rowspan="3"><br>Game: {{game.id}}<br><a class="Choosebutton" href="{% url 'select_game' type game.id%}">
+                      {% if type == "join" %}
+                      Join
+                      {% elif type == "play" %}
+                      Play
+                      {% elif type == "reproduce" %}
+                      Reproduce
+                      {% endif %}
+                    </a><br></th>
+                  </tr>
+                  <tr>
+                    <td class="tg-c3ow" rowspan="2"><img src="{% static 'img/resizemouse.png' %}" alt="Mouseimg"></td>
+                    <td class="tg-c3ow" rowspan="2"><img src="{% static 'img/resizecat.png' %}" alt="Catimg"></td>
+                  </tr>
+                  <tr>
+
+                  </tr>
+                </table>
+              </li>
+            {% endfor %}
+          </ul>
+    {% else %}
+        <p>Sorry, there is no game you can {{type}}.</p>
+    {% endif %}
+    <p><i class="fa fa-arrow-left"></i><a href="{% url 'landing' %}">Return to homepage</a></p>
+  </div>
 </div>
 {% endblock content %}
