@@ -42,11 +42,13 @@ class MoveForm(forms.ModelForm):
     origin = forms.IntegerField(validators=[MinValueValidator(
                                             Game.MIN_CELL, OUT_OF_RANGE),
                                             MaxValueValidator(
-                                            Game.MAX_CELL, OUT_OF_RANGE)])
+                                            Game.MAX_CELL, OUT_OF_RANGE)],
+                                widget=forms.HiddenInput())
     target = forms.IntegerField(validators=[MinValueValidator(
                                             Game.MIN_CELL, OUT_OF_RANGE),
                                             MaxValueValidator(
-                                            Game.MAX_CELL, OUT_OF_RANGE)])
+                                            Game.MAX_CELL, OUT_OF_RANGE)],
+                                widget=forms.HiddenInput())
 
     class Meta:
         model = Move

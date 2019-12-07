@@ -7,9 +7,9 @@
   <div class="Center">
     {% if type == "play" %}
     <h2>Play</h2>
-    <form id="refreshform" action="{% url 'show_game' type%}" method="post">
+    <!-- <form id="refreshform" action="{% url 'show_game' type%}" method="post">
       {% csrf_token %}
-    </form>
+    </form> -->
     <p>Game: <b>{{ game.id }}</b></p>
     <form id="move_form" method="post" action="{% url 'move' %}">
         {% csrf_token %}
@@ -19,7 +19,6 @@
                 <blockquote class="cat">
                     {% if game.cat_turn %}
                         {{ move_form }}
-                        <input type="submit" value="Move" />
                     {% else %}
                         <p>Waiting for the mouse...
                         <a style="margin-left:20px;font-weight:normal" href="{% url 'show_game' type %}">Refresh</a></p>
@@ -33,7 +32,6 @@
                 <blockquote class="mouse">
                     {% if not game.cat_turn %}
                         {{ move_form }}
-                        <input type="submit" value="Move" />
                     {% else %}
                         <p>Waiting for the cat...
                         <a style="margin-left:20px;font-weight:normal" href="{% url 'show_game' type %}">Refresh</a></p>

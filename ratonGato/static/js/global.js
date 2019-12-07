@@ -135,17 +135,29 @@ $(document).ready(function(){
   $('.droppable').droppable({
     drop: function(){
       $("input[name='target']").val(parseInt($(this).attr('id').slice(5)));
+      var origin = $("input[name='origin']").val();
+      var target = $("input[name='target']").val();
       $.ajax({
         url: '/move/',
         method: 'POST',
         data: {
-          'origin' : $("input[name='origin']").val(),
-          'target' : $("input[name='target']").val()
+          'origin' : origin,
+          'target' : target
         },
         dataType: 'json',
         success: function(data){
           if(data['valid'] == 1){
-            $("#refreshform").submit();
+            var previmg = $('#cell_'.concat(origin.toString())).html();
+            $('#cell_'.concat(origin.toString())).html('');
+            $('#cell_'.concat(target.toString())).html(previmg);
+            $('#cell_'.concat(target.toString())).find(".draggable").css("top", "");
+            $('#cell_'.concat(target.toString())).find(".draggable").css("left", "");
+            if(previmg.includes("Cat")){
+              $("blockquote[class='cat']").html("<p>Waiting for the mouse...<a style='margin-left:20px;font-weight:normal' href='{% url 'show_game' type %}'>Refresh</a></p>")
+            }
+            else{
+              $("blockquote[class='mouse']").html("<p>Waiting for the cat...<a style='margin-left:20px;font-weight:normal' href='{% url 'show_game' type %}'>Refresh</a></p>")
+            }
           }
         }
       })
