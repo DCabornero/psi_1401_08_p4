@@ -302,23 +302,22 @@ def move(request):
                 pk = request.session[constants.GAME_SELECTED_SESSION_ID]
                 game = Game.objects.get(pk=pk)
             except KeyError:
-                return errorHTTP(request, "Game not selected. Please select a \
-                                           game before trying to play")
+                return JsonResponse({'valid' : 0})
             move.game = game
             # Comprobamos si el movimiento es completamente válido en cuanto
             # a modelo y lógica
             try:
                 move.save()
             except ValidationError:
-                return errorHTTP(request, "Move not allowed")
-            return redirect(reverse('show_game', args=('play',)))
+                return JsonResponse({'valid' : 0})
+            return JsonResponse({'valid' : 1})
         else:
             # Imprimimos los errores del formulario
-            return errorHTTP(request, form.errors)
+            return JsonResponse({'valid' : 0})
     # No debería ser posible acceder a esta función mediante un método distinto
     # de POST
     else:
-        return errorHTTP(request, "Invalid method")
+        return JsonResponse({'valid' : 0})
 
 @login_required
 def get_move(request):

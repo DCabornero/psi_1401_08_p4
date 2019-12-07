@@ -25,7 +25,7 @@ http://www.templatemo.com/tm-473-november
 
 /* HTML Document is loaded and DOM is ready.
 --------------------------------------------*/
-
+var timeoutRet = null;
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -45,6 +45,29 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+function nextb(){
+  $.ajax({
+    url: '/get_move/',
+    method: 'POST',
+    data: {
+      'shift': 1
+    },
+    dataType: 'json',
+    success: function (data){
+      var previmg = $('#cell_'.concat(data['origin'].toString())).html();
+      $('#cell_'.concat(data['origin'].toString())).html('');
+      $('#cell_'.concat(data['target'].toString())).html(previmg);
+      if(data['next'] != true){
+        $("#nextbutton").attr("disabled", true);
+        if(timeoutRet != null){
+          clearInterval(timeoutRet);
+          timeoutRet = null;
+        }
+      }
+      $("#prevbutton").attr("disabled", false);
+    }
+  })}
 
 
 $(document).ready(function(){
@@ -104,11 +127,29 @@ $(document).ready(function(){
   });
   $('.draggable').draggable({
     revert: true,
-    containment: "#chess_board"
+    containment: "#chess_board",
+    drag: function(){
+      $("input[name='origin']").val(parseInt($(this).parent().attr('id').slice(5)));
+    }
   });
-  $('.droppable').droppable(
-    // drop: function(event){
-    //   console.log($(this).attr('id'));
+  $('.droppable').droppable({
+    drop: function(){
+      $("input[name='target']").val(parseInt($(this).attr('id').slice(5)));
+      $.ajax({
+        url: '/move/',
+        method: 'POST',
+        data: {
+          'origin' : $("input[name='origin']").val(),
+          'target' : $("input[name='target']").val()
+        },
+        dataType: 'json',
+        success: function(data){
+          if(data['valid'] == 1){
+            $("#refreshform").submit();
+          }
+        }
+      })
+    }}
   );
   $('#prevbutton').click(function(){
     $.ajax({
@@ -122,32 +163,26 @@ $(document).ready(function(){
         var previmg = $('#cell_'.concat(data['origin'].toString())).html();
         $('#cell_'.concat(data['origin'].toString())).html('');
         $('#cell_'.concat(data['target'].toString())).html(previmg);
-        if(!(data['previous'])){
-          $("#prevbutton").attr("diabled", true);
+        if(data['previous'] != true){
+          $("#prevbutton").attr("disabled", true);
         }
-        $("#nextbutton").attr("diabled", false);
+        $("#nextbutton").attr("disabled", false);
       }
     })
   });
 
-  $('#nextbutton').click(function(){
-    $.ajax({
-      url: '/get_move/',
-      method: 'POST',
-      data: {
-        'shift': 1
-      },
-      dataType: 'json',
-      success: function (data){
-        var previmg = $('#cell_'.concat(data['origin'].toString())).html();
-        $('#cell_'.concat(data['origin'].toString())).html('');
-        $('#cell_'.concat(data['target'].toString())).html(previmg);
-        if(!(data['next'])){
-          $("#nextbutton").attr("diabled", true);
-        }
-        $("#prevbutton").attr("diabled", false);
-      }
-    })
+  $('#nextbutton').click(nextb);
+
+  var flag = 0;
+  $('#autoplay').click(function(){
+    if(flag == 0){
+      timeoutRet = setInterval(nextb,2000);
+      flag = 1;
+    }
+    else{
+      clearInterval(timeoutRet);
+      flag = 0;
+    }
   });
   //Header Small
   window.addEventListener('scroll', function(e){

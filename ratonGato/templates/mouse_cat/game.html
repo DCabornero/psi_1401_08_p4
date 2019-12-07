@@ -7,6 +7,9 @@
   <div class="Center">
     {% if type == "play" %}
     <h2>Play</h2>
+    <form id="refreshform" action="{% url 'show_game' type%}" method="post">
+      {% csrf_token %}
+    </form>
     <p>Game: <b>{{ game.id }}</b></p>
     <form id="move_form" method="post" action="{% url 'move' %}">
         {% csrf_token %}
@@ -82,7 +85,7 @@
       <p>Game: <b>{{ game.id }}</b></p>
       <p>Cats: <b>{{ game.cat_user.username }}</b></p>
       <p>Mouse: <b>{{ game.mouse_user.username }}</b></p>
-      <input id="prevbutton" type="button" name="prev" value="<-Previous">
+      <input id="prevbutton" type="button" name="prev" value="<-Previous" disabled>
       <input id="nextbutton" type="button" name="next" value="Next->">
       <input id="autoplay" type="button" name="auto" value="Autoplay">
       <table id="chess_board" style="margin: 0 auto;">
