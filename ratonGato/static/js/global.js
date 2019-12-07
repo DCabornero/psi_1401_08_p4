@@ -72,7 +72,14 @@ $(document).ready(function(){
       }
     }
   });
-
+  $('.draggable').draggable({
+    revert: true,
+    containment: "#chess_board"
+  });
+  $('.droppable').droppable(
+    // drop: function(event){
+    //   console.log($(this).attr('id'));
+  );
   //Header Small
   window.addEventListener('scroll', function(e){
     var distanceY = window.pageYOffset || document.documentElement.scrollTop,
@@ -85,6 +92,8 @@ $(document).ready(function(){
     }
   });
 });
+
+
 
 //$(document).on("scroll", onScroll);
 

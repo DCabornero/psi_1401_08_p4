@@ -48,27 +48,38 @@
             {% if forloop.counter0|divisibleby:8 %}<tr>{% endif %}
             {% if forloop.counter0|modulo:16 < 8 %}
               {% if forloop.counter0|divisibleby:2 %}
-                <td id="cell_{{ forloop.counter0}}"" style='background-color:white;height:30px;width:30px;border:1px solid #000000;text-align:center;vertical-align:middle;'>
+                <td id="cell_{{ forloop.counter0}}" class='droppable' style='background-color:white;height:30px;width:30px;border:1px solid #000000;text-align:center;vertical-align:middle;'>
               {% else %}
-                <td id="cell_{{ forloop.counter0}}"" style='background-color:navy;height:30px;width:30px;border:1px solid #000000;text-align:center;vertical-align:middle;'>
+                <td id="cell_{{ forloop.counter0}}" class='droppable' style='background-color:navy;height:30px;width:30px;border:1px solid #000000;text-align:center;vertical-align:middle;'>
               {% endif %}
             {% else %}
               {% if forloop.counter0|divisibleby:2 and forloop.counter0|divisibleby:2 %}
-                <td id="cell_{{ forloop.counter0}}"" style='background-color:navy;height:30px;width:30px;border:1px solid #000000;text-align:center;vertical-align:middle;'>
+                <td id="cell_{{ forloop.counter0}}" class='droppable' style='background-color:navy;height:30px;width:30px;border:1px solid #000000;text-align:center;vertical-align:middle;'>
               {% else %}
-                <td id="cell_{{ forloop.counter0}}"" style='background-color:white;height:30px;width:30px;border:1px solid #000000;text-align:center;vertical-align:middle;'>
+                <td id="cell_{{ forloop.counter0}}" class='droppable' style='background-color:white;height:30px;width:30px;border:1px solid #000000;text-align:center;vertical-align:middle;'>
               {% endif %}
             {% endif %}
                 {% if item ==  0 %}
-                {% elif item == 1 %}<img src="{% static 'img/resizecat.png' %}" alt="Cat">
-                {% else %}<img style='display:block;margin:0;' src="{% static 'img/resizemouse.png' %}" alt="Mouse">{% endif %}
+                {% elif item == 1 %}
+                  {% if game.cat_turn and game.cat_user.id == user.id %}
+                    <img class='draggable' style='display:block;margin:0;' src="{% static 'img/resizecat.png' %}" alt="Cat">
+                  {% else %}
+                    <img style='display:block;margin:0;' src="{% static 'img/resizecat.png' %}" alt="Cat">
+                  {% endif %}
+                {% else %}
+                  {% if not game.cat_turn and game.mouse_user.id == user.id %}
+                    <img class='draggable' style='display:block;margin:0;' src="{% static 'img/resizemouse.png' %}" alt="Mouse">
+                  {% else %}
+                    <img style='display:block;margin:0;' src="{% static 'img/resizemouse.png' %}" alt="Mouse">
+                  {% endif %}
+                {% endif %}
             </td>
             {% if forloop.counter|divisibleby:8 or forloop.last %}</tr>{% endif %}
         {% endfor %}
         </table>
     {% endif %}
 
-    <p><a href="{% url 'landing' %}">Return to homepage</a></p>
+    <p><i class="fa fa-arrow-left"></i><a href="{% url 'landing' %}">Return to homepage</a></p>
   </div>
 </div>
 {% endblock content %}
