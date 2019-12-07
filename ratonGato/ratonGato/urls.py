@@ -32,6 +32,7 @@ urlpatterns = [
     path('select_game/<str:type>/<int:game_id>', views.select_game, name='select_game'),
     path('show_game/<str:type>', views.show_game, name='show_game'),
     path('move/', views.move, name='move'),
+    path('get_move/', views.get_move, name='get_move'),
     path('errorHTTP/', views.errorHTTP, name='errorHTTP'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -25,8 +25,37 @@ http://www.templatemo.com/tm-473-november
 
 /* HTML Document is loaded and DOM is ready.
 --------------------------------------------*/
-$(document).ready(function(){
 
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+$(document).ready(function(){
+  var csrftoken = getCookie('csrftoken');
+  $.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+  });
   //mobilemenu
   $('.mobile').click(function(){
     var $self = $(this);
@@ -80,6 +109,37 @@ $(document).ready(function(){
     // drop: function(event){
     //   console.log($(this).attr('id'));
   );
+  $('#prevbutton').click(function(){
+    $.ajax({
+      url: '/get_move/',
+      method: 'POST',
+      data: {
+        'shift': -1
+      },
+      dataType: 'json',
+      success: function (data){
+        var previmg = $('#cell_'.concat(data['origin'].toString())).html();
+        $('#cell_'.concat(data['origin'].toString())).html('');
+        $('#cell_'.concat(data['target'].toString())).html(previmg);
+      }
+    })
+  });
+
+  $('#nextbutton').click(function(){
+    $.ajax({
+      url: '/get_move/',
+      method: 'POST',
+      data: {
+        'shift': 1
+      },
+      dataType: 'json',
+      success: function (data){
+        var previmg = $('#cell_'.concat(data['origin'].toString())).html();
+        $('#cell_'.concat(data['origin'].toString())).html('');
+        $('#cell_'.concat(data['target'].toString())).html(previmg);
+      }
+    })
+  });
   //Header Small
   window.addEventListener('scroll', function(e){
     var distanceY = window.pageYOffset || document.documentElement.scrollTop,

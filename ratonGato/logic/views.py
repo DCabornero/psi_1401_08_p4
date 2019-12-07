@@ -2,13 +2,13 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.urls import reverse
 from datamodel.models import Counter
-from datamodel.models import Game
+from datamodel.models import Game, Move
 from datamodel.models import GameStatus
 from logic.forms import SignupForm, MoveForm, LoginForm
 from django.contrib.auth import authenticate
 import django.contrib.auth
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from datamodel import constants
 from django.core.exceptions import ValidationError
 
@@ -234,6 +234,10 @@ def select_game(request, type, game_id=None):
             if g.status != GameStatus.FINISHED:
                 return errorHTTP(request, "Game number {0} is not finished, you can't reproduce it. Please try again.".format(game_id))
             request.session[constants.GAME_SELECTED_SESSION_ID] = g.id
+            if 'step' in request.session:
+                del request.session['step']
+            if 'direction' in request.session:
+                del request.session['direction']
             return(redirect(reverse('show_game', args=(type,))))
     else:
         if type == "play":
@@ -315,3 +319,52 @@ def move(request):
     # de POST
     else:
         return errorHTTP(request, "Invalid method")
+
+@login_required
+def get_move(request):
+    # Author: Sergio Galán
+    if request.method != 'POST':
+        return errorHTTP(request, "GET not allowed")
+    shift = request.POST['shift']
+    shift = int(shift)
+    if 'direction' in request.session:
+        direction = request.session['direction']
+    else:
+        direction = None
+    if 'step' in request.session:
+        step = request.session['step']
+        if direction is None or direction == shift:
+            step = step + shift
+    else:
+        step = 0
+    game_id = request.session[constants.GAME_SELECTED_SESSION_ID]
+    moves = Move.objects.filter(game__id = game_id).order_by('date')
+    if step >= len(list(moves)) or step < 0:
+        return errorHTTP(request, "Unexpected error, please try again!")
+    try:
+        curr_move = list(moves)[step]
+    except:
+        return errorHTTP(request, "Unexpected error, please try again!")
+    if shift == 1:
+        ret_json = {
+            'origin' : curr_move.origin,
+            'target' : curr_move.target,
+            'previous' : True,
+            'next' : True
+        }
+    else:
+        ret_json = {
+            'origin' : curr_move.target,
+            'target' : curr_move.origin,
+            'previous' : True,
+            'next' : True
+        }
+    if step == 0 and shift == -1:
+        ret_json['previous'] = False
+    if step == len(list(moves)) - 1 and shift == 1:
+        ret_json['next'] = False
+    if direction is None or direction == shift:
+        request.session['step'] = step
+    request.session['direction'] = shift
+    request.session.modified = True
+    return JsonResponse(ret_json)
