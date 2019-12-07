@@ -56,6 +56,7 @@ $(document).ready(function(){
         }
     }
   });
+
   //mobilemenu
   $('.mobile').click(function(){
     var $self = $(this);
@@ -121,6 +122,10 @@ $(document).ready(function(){
         var previmg = $('#cell_'.concat(data['origin'].toString())).html();
         $('#cell_'.concat(data['origin'].toString())).html('');
         $('#cell_'.concat(data['target'].toString())).html(previmg);
+        if(!(data['previous'])){
+          $("#prevbutton").attr("diabled", true);
+        }
+        $("#nextbutton").attr("diabled", false);
       }
     })
   });
@@ -137,6 +142,10 @@ $(document).ready(function(){
         var previmg = $('#cell_'.concat(data['origin'].toString())).html();
         $('#cell_'.concat(data['origin'].toString())).html('');
         $('#cell_'.concat(data['target'].toString())).html(previmg);
+        if(!(data['next'])){
+          $("#nextbutton").attr("diabled", true);
+        }
+        $("#prevbutton").attr("diabled", false);
       }
     })
   });
