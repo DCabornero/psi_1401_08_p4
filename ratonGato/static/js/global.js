@@ -26,6 +26,7 @@ http://www.templatemo.com/tm-473-november
 /* HTML Document is loaded and DOM is ready.
 --------------------------------------------*/
 var timeoutRet = null;
+var timeoutUpdate = null;
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -69,6 +70,76 @@ function nextb(){
       $("#prevbutton").attr("disabled", false);
     }
   })}
+
+function updateGame(){
+  $.ajax({
+    url: '/current_move/',
+    method: 'POST',
+    success: function (data){
+      var waiting_for_mouse = $("blockquote[class='cat']").text().includes("Waiting")
+      var waiting_for_cat = $("blockquote[class='mouse']").text().includes("Waiting")
+      var origin = data['origin']
+      var target = data['target']
+      if(waiting_for_cat && data['last_move'] == 'cat'){
+        $("blockquote[class='mouse']").html("");
+        var previmg = $('#cell_'.concat(origin.toString())).html();
+        $('#cell_'.concat(origin.toString())).html('');
+        $('#cell_'.concat(target.toString())).html(previmg);
+        $("img[alt='Mouse']").addClass("draggable");
+        $(".draggable[alt='Mouse']").draggable({
+          revert: true,
+          containment: "#chess_board",
+          drag: function(){
+            $("input[name='origin']").val(parseInt($(this).parent().attr('id').slice(5)));
+          }
+        }).draggable('enable');
+        clearInterval(timeoutUpdate);
+        timeoutUpdate = null;
+      }
+      else if(waiting_for_mouse && data['last_move'] == 'mouse'){
+        $("blockquote[class='cat']").html("");
+        var previmg = $('#cell_'.concat(origin.toString())).html();
+        $('#cell_'.concat(origin.toString())).html('');
+        $('#cell_'.concat(target.toString())).html(previmg);
+        console.log("Voy a poner draggable a los gatos")
+        $("img[alt='Cat']").addClass("draggable");
+        $(".draggable[alt='Cat']").draggable({
+          revert: true,
+          containment: "#chess_board",
+          drag: function(){
+            $("input[name='origin']").val(parseInt($(this).parent().attr('id').slice(5)));
+          }
+        }).draggable('enable');
+        clearInterval(timeoutUpdate);
+        timeoutUpdate = null;
+      }
+      if(data['winner'] == 'cat'){
+        $("blockquote[class='mouse']").text("Loser");
+        $("blockquote[class='cat']").text("Winner");
+        if(waiting_for_mouse){
+          alert("You win!!!!");
+        }
+        else{
+          alert("You lose :(");
+        }
+        clearInterval(timeoutUpdate);
+        timeoutUpdate = null;
+      }
+      if(data['winner'] == 'mouse'){
+        $("blockquote[class='mouse']").text("Winner");
+        $("blockquote[class='cat']").text("Loser");
+        if(waiting_for_cat){
+          alert("You win!!!!");
+        }
+        else{
+          alert("You lose :(");
+        }
+        clearInterval(timeoutUpdate);
+        timeoutUpdate = null;
+      }
+    }
+  })
+}
 
 
 $(document).ready(function(){
@@ -154,16 +225,24 @@ $(document).ready(function(){
             $('#cell_'.concat(target.toString())).find(".draggable").css("top", "");
             $('#cell_'.concat(target.toString())).find(".draggable").css("left", "");
             if(previmg.includes("Cat")){
+              console.log("Voy a quitar el draggable a los gatos")
+              $(".draggable[alt='Cat']").draggable().draggable('disable');
               $("blockquote[class='cat']").html("<p>Waiting for the mouse...<a style='margin-left:20px;font-weight:normal' href='javascript:window.location.reload(true)'>Refresh</a></p>")
             }
             else{
+              console.log("Voy a quitar el draggable al ratón")
+              $(".draggable[alt='Mouse']").draggable().draggable('disable');
               $("blockquote[class='mouse']").html("<p>Waiting for the cat...<a style='margin-left:20px;font-weight:normal' href='javascript:window.location.reload(true)'>Refresh</a></p>")
             }
+            timeoutUpdate = setInterval(updateGame, 4000);
           }
         }
       })
     }}
   );
+  if($("blockquote[class='mouse']").text().includes('Waiting') || $("blockquote[class='cat']").text().includes('Waiting')){
+    timeoutUpdate = setInterval(updateGame, 4000);
+  }
   $('#prevbutton').click(function(){
     $.ajax({
       url: '/get_move/',

@@ -350,3 +350,28 @@ def get_move(request):
     request.session['direction'] = shift
     request.session.modified = True
     return JsonResponse(ret_json)
+
+
+@login_required
+def current_move(request):
+    # Author: David Cabornero
+    if request.method != 'POST':
+        return errorHTTP(request, "GET not allowed")
+    game_id = request.session[constants.GAME_SELECTED_SESSION_ID]
+    moves = Move.objects.filter(game__id = game_id).order_by('-date')
+    curr_move = list(moves)[0]
+    if curr_move.game.cat_turn is True:
+        last_player = 'mouse'
+    else:
+        last_player = 'cat'
+    if curr_move.game.status == GameStatus.FINISHED:
+        winner = Game.finish(curr_move.game)
+    else:
+        winner = 'None'
+    ret_json = {
+        'origin': curr_move.origin,
+        'target': curr_move.target,
+        'last_move': last_player,
+        'winner': winner
+    }
+    return JsonResponse(ret_json)

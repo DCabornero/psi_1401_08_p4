@@ -33,6 +33,7 @@ urlpatterns = [
     path('show_game/<str:type>', views.show_game, name='show_game'),
     path('move/', views.move, name='move'),
     path('get_move/', views.get_move, name='get_move'),
+    path('current_move/', views.current_move, name='current_move'),
     path('errorHTTP/', views.errorHTTP, name='errorHTTP'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

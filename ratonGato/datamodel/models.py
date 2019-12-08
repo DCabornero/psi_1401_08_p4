@@ -100,8 +100,18 @@ class Game(models.Model):
         if not is_mouse_notloser:
             return "cat"
         # Ahora tenemos que ver si ha ganado el ratón, es decir que ningún
-        # gato tiene movimientos disponibles
+        # gato tiene movimientos disponibles o que el ratón ha adelantado a
+        # los gatos
         others = [c1, c2, c3, c4, m]
+        mouse_win = 1
+        # Comprobamos si todos los gatos están adelantados
+        for cat in cats:
+            if m[0] >= cat[0]:
+                mouse_win = 0
+                break
+        if mouse_win == 1:
+            return "mouse"
+
         for cat in cats:
             others.remove(cat)
             valid_targets = [[cat[0]+1, (cat[1]-1) % (Game.ROW_LEN + 1)],

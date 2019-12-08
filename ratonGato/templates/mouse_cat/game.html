@@ -10,12 +10,12 @@
     <p>Game: <b>{{ game.id }}</b></p>
     <form id="move_form" method="post" action="{% url 'move' %}">
         {% csrf_token %}
+        {{ move_form }}
         <p>
             Cats: <b>{{ game.cat_user.username }}</b>
             {% if game.cat_user.id == request.user.id %}
                 <blockquote class="cat">
                     {% if game.cat_turn %}
-                        {{ move_form }}
                     {% else %}
                         <p>Waiting for the mouse...
                         <a style="margin-left:20px;font-weight:normal" href="{% url 'show_game' type %}">Refresh</a></p>
@@ -28,7 +28,6 @@
             {% if game.mouse_user.id == request.user.id %}
                 <blockquote class="mouse">
                     {% if not game.cat_turn %}
-                        {{ move_form }}
                     {% else %}
                         <p>Waiting for the cat...
                         <a style="margin-left:20px;font-weight:normal" href="{% url 'show_game' type %}">Refresh</a></p>
