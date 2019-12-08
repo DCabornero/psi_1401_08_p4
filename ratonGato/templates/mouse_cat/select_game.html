@@ -2,36 +2,6 @@
 {% load staticfiles %}
 
 {% block content %}
-<!-- <div id="content">
-    <h1>Select game</h1>
-    <p>
-        {% if as_cat %}
-            Games as cat:
-            <ul>
-            {% for game in as_cat %}
-                <li> <a href="{% url 'select_game' game.id %}">{{ game }}</a></li>
-            {% endfor %}
-            </ul>
-        {%  else %}
-            No games as cat
-        {% endif %}
-    </p>
-
-    <p>
-        {% if as_mouse %}
-            Games as mouse:
-            <ul>
-            {% for game in as_mouse %}
-                <li> <a href="{% url 'select_game' game.id %}">{{ game }}</a></li>
-            {% endfor %}
-            </ul>
-        {%  else %}
-            No games as mouse
-        {% endif %}
-    </p>
-
-    <p><a href="{% url 'landing' %}">Return to homepage</a></p>
-</div> -->
 
 <div class="Services_sec" id="services">
   <div class="Center">
@@ -70,6 +40,23 @@
               <hr>
             {% endfor %}
           </ul>
+          <div class="pagination">
+    <span class="step-links">
+        {% if games.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ games.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ games.number }} of {{ games.paginator.num_pages }}.
+        </span>
+
+        {% if games.has_next %}
+            <a href="?page={{ games.next_page_number }}">next</a>
+            <a href="?page={{ games.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
     {% else %}
         <p>Sorry, there is no game you can {{type}}.</p>
     {% endif %}

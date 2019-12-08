@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, JsonResponse
 from datamodel import constants
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
 
 ANONYMOUSE_ERROR = "Action restricted to anonymous users"
 LOGIN_ERROR = "Username/password is not valid"
@@ -34,6 +35,7 @@ def anonymous_required(f):
 def errorHTTP(request, exception=None):
     context_dict = {}
     context_dict[constants.ERROR_MESSAGE_ID] = exception
+    Counter.objects.inc()
     return render(request, "mouse_cat/error.html", context_dict, status=404)
 
 
@@ -180,32 +182,6 @@ def create_game(request):
 def select_game(request, type, game_id=None):
     # Author: Sergio Galán
     context_dict = {}
-    # Si la petición viene con el parámetro id
-    # if game_id is not None:
-    #     # Buscamos el juego con ese id
-    #     try:
-    #         g = Game.objects.get(pk=game_id)
-    #     # Salvo que no exista o no cumpla las condiciones siguientes
-    #     except Game.DoesNotExist:
-    #         return errorHTTP(request, "No game with id = {0} \
-    #                                    in the database".format(game_id))
-    #     # No se puede jugar un juego que no tenga status ACTIVE
-    #     if g.status != GameStatus.ACTIVE:
-    #         return errorHTTP(request, "Game with id = {0} \
-    #                                    is not active".format(game_id))
-    #     # No se puede jugar un juego en el que el usuario no sea uno de los
-    #     # jugadores
-    #     condition1 = g.mouse_user.id != request.user.id
-    #     condition2 = g.cat_user.id != request.user.id
-    #     if condition1 and condition2:
-    #         return errorHTTP(request, "You are not a player of the game \
-    #                                    with id = {0}".format(game_id))
-    #     request.session['game_selected'] = game_id
-    #     # Redireccionamos a la vista del juego seleccionado
-    #     return redirect(reverse('show_game'))
-    # Si viene sin el parametro id, ofrecemos una lista de juegos disponibles
-    # diferenciados por el puesto vacante (gato o ratón)
-    #else:
     u = request.user
     if game_id is not None:
         try:
@@ -243,18 +219,24 @@ def select_game(request, type, game_id=None):
         if type == "play":
             as_cat = Game.objects.filter(status=GameStatus.ACTIVE, cat_user=u)
             as_mouse = Game.objects.filter(status=GameStatus.ACTIVE, mouse_user=u)
-            context_dict['games'] = list(as_cat)+list(as_mouse)
+            paginator = Paginator(list(as_cat)+list(as_mouse), 5)
+            page = request.GET.get('page', default=1)
+            context_dict['games'] = paginator.get_page(page)
             context_dict['type'] = 'play'
             return render(request, "mouse_cat/select_game.html", context_dict)
         elif type == "join":
             available = Game.objects.filter(status=GameStatus.CREATED).exclude(cat_user=u)
-            context_dict['games'] = list(available)
+            paginator = Paginator(list(available), 5)
+            page = request.GET.get('page', default=1)
+            context_dict['games'] = paginator.get_page(page)
             context_dict['type'] = 'join'
             return render(request, "mouse_cat/select_game.html", context_dict)
         elif type == "reproduce":
             as_cat = Game.objects.filter(status=GameStatus.FINISHED, cat_user=u)
             as_mouse = Game.objects.filter(status=GameStatus.FINISHED, mouse_user=u)
-            context_dict['games'] = list(as_cat)+list(as_mouse)
+            paginator = Paginator(list(as_cat)+list(as_mouse), 5)
+            page = request.GET.get('page', default=1)
+            context_dict['games'] = paginator.get_page(page)
             context_dict['type'] = 'reproduce'
             return render(request, "mouse_cat/select_game.html", context_dict)
     return errorHTTP(request, "Invalid url.")
@@ -318,6 +300,7 @@ def move(request):
     # de POST
     else:
         return JsonResponse({'valid' : 0})
+
 
 @login_required
 def get_move(request):

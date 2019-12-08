@@ -7,9 +7,6 @@
   <div class="Center">
     {% if type == "play" %}
     <h2>Play</h2>
-    <!-- <form id="refreshform" action="{% url 'show_game' type%}" method="post">
-      {% csrf_token %}
-    </form> -->
     <p>Game: <b>{{ game.id }}</b></p>
     <form id="move_form" method="post" action="{% url 'move' %}">
         {% csrf_token %}
