@@ -103,8 +103,8 @@ class Game(models.Model):
         # gato tiene movimientos disponibles o que el ratón ha adelantado a
         # los gatos
         others = [c1, c2, c3, c4, m]
-        mouse_win = 1
         # Comprobamos si todos los gatos están adelantados
+        mouse_win = 1
         for cat in cats:
             if m[0] >= cat[0]:
                 mouse_win = 0
@@ -118,15 +118,9 @@ class Game(models.Model):
                              [cat[0]+1, (cat[1]+1) % (Game.ROW_LEN + 1)]]
             for t in valid_targets:
                 if t[0] <= Game.COL_LEN and t[0] >= 1 and t[1] != 0:
-                    # Nos quedamos con los movimientos que se quedan dentro del
-                    # tablero
-                    for other in others:
-                        # Miramos si el objetivo no está ocupado por otra
-                        # entidad
-                        if other[0] != t[0] or other[1] != t[1]:
-                            # Hay algún movimiento posible para algún gato
-                            # La partida no ha acabado
-                            return None
+                    # Comprobamos si los posibles movimientos están ocupados por otras entidades
+                    if t not in others:
+                        return None
             others.append(cat)
         # Si llega aquí es que ha ganado el ratón por no tener ningún
         # movimiento válido los gatos
