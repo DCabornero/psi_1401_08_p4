@@ -60,6 +60,7 @@ function nextb(){
       $('#cell_'.concat(data['target'].toString())).html(previmg);
       if(data['next'] != true){
         $("#nextbutton").attr("disabled", true);
+        $("#autoplay").attr("disabled", true);
         if(timeoutRet != null){
           clearInterval(timeoutRet);
           timeoutRet = null;
@@ -153,10 +154,10 @@ $(document).ready(function(){
             $('#cell_'.concat(target.toString())).find(".draggable").css("top", "");
             $('#cell_'.concat(target.toString())).find(".draggable").css("left", "");
             if(previmg.includes("Cat")){
-              $("blockquote[class='cat']").html("<p>Waiting for the mouse...<a style='margin-left:20px;font-weight:normal' href='{% url 'show_game' type %}'>Refresh</a></p>")
+              $("blockquote[class='cat']").html("<p>Waiting for the mouse...<a style='margin-left:20px;font-weight:normal' href='javascript:window.location.reload(true)'>Refresh</a></p>")
             }
             else{
-              $("blockquote[class='mouse']").html("<p>Waiting for the cat...<a style='margin-left:20px;font-weight:normal' href='{% url 'show_game' type %}'>Refresh</a></p>")
+              $("blockquote[class='mouse']").html("<p>Waiting for the cat...<a style='margin-left:20px;font-weight:normal' href='javascript:window.location.reload(true)'>Refresh</a></p>")
             }
           }
         }
@@ -179,6 +180,7 @@ $(document).ready(function(){
           $("#prevbutton").attr("disabled", true);
         }
         $("#nextbutton").attr("disabled", false);
+        $("#autoplay").attr("disabled", false);
       }
     })
   });

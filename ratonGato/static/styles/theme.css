@@ -13,6 +13,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 html, body, button, input, select, textarea { font-family: Arial; font-size: 12px; color: white; }
 ul, ol { margin-top: 0; margin-bottom: 10px; }
 ul ul { margin-bottom: 0; }
+ul { list-style-type: none;}
 li { font-size: 13px; margin: 5px 0px 10px 0px; color: red; font-family: "Open Sans";}
 pre { overflow: auto; }
 table { border-collapse: separate; border-spacing: 0; }
@@ -315,3 +316,6 @@ border-top-color: #f9c922; -webkit-animation: spin 1.5s linear infinite; /* Chro
 
 
 #prevbutton, #nextbutton, #autoplay {color:black;}
+#prevbutton:disabled {color:grey;}
+#nextbutton:disabled {color:grey;}
+#autoplay:disabled {color:grey;}
