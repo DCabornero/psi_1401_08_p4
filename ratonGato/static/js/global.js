@@ -101,7 +101,6 @@ function updateGame(){
         var previmg = $('#cell_'.concat(origin.toString())).html();
         $('#cell_'.concat(origin.toString())).html('');
         $('#cell_'.concat(target.toString())).html(previmg);
-        console.log("Voy a poner draggable a los gatos")
         $("img[alt='Cat']").addClass("draggable");
         $(".draggable[alt='Cat']").draggable({
           revert: true,
@@ -114,8 +113,6 @@ function updateGame(){
         timeoutUpdate = null;
       }
       if(data['winner'] == 'cat'){
-        $("blockquote[class='mouse']").text("Loser");
-        $("blockquote[class='cat']").text("Winner");
         if(waiting_for_mouse){
           alert("You win!!!!");
         }
@@ -126,8 +123,6 @@ function updateGame(){
         timeoutUpdate = null;
       }
       if(data['winner'] == 'mouse'){
-        $("blockquote[class='mouse']").text("Winner");
-        $("blockquote[class='cat']").text("Loser");
         if(waiting_for_cat){
           alert("You win!!!!");
         }
@@ -224,17 +219,37 @@ $(document).ready(function(){
             $('#cell_'.concat(target.toString())).html(previmg);
             $('#cell_'.concat(target.toString())).find(".draggable").css("top", "");
             $('#cell_'.concat(target.toString())).find(".draggable").css("left", "");
-            if(previmg.includes("Cat")){
-              console.log("Voy a quitar el draggable a los gatos")
+            if(data['winner'] == "cat"){
+              if(previmg.includes("Cat")){
+                alert('You win!!!!')
+              }
+              else{
+                alert('You lose :(')
+              }
+            }
+            else if(data['winner'] == "mouse"){
+              if(previmg.includes("Cat")){
+                alert('You lose :(')
+              }
+              else{
+                alert('You win!!!!')
+              }
+            }
+            else{
+              timeoutUpdate = setInterval(updateGame, 4000);
+            }
+            if(previmg.includes("Cat") && data['winner'] == null){
               $(".draggable[alt='Cat']").draggable().draggable('disable');
               $("blockquote[class='cat']").html("<p>Waiting for the mouse...<a style='margin-left:20px;font-weight:normal' href='javascript:window.location.reload(true)'>Refresh</a></p>")
             }
-            else{
-              console.log("Voy a quitar el draggable al ratón")
+            else if(previmg.includes("Mouse") && data['winner'] == null){
               $(".draggable[alt='Mouse']").draggable().draggable('disable');
               $("blockquote[class='mouse']").html("<p>Waiting for the cat...<a style='margin-left:20px;font-weight:normal' href='javascript:window.location.reload(true)'>Refresh</a></p>")
             }
-            timeoutUpdate = setInterval(updateGame, 4000);
+            else{
+              $("blockquote[class='cat']").html("")
+              $("blockquote[class='mouse']").html("")
+            }
           }
         }
       })

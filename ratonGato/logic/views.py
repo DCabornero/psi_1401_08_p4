@@ -284,22 +284,22 @@ def move(request):
                 pk = request.session[constants.GAME_SELECTED_SESSION_ID]
                 game = Game.objects.get(pk=pk)
             except KeyError:
-                return JsonResponse({'valid' : 0})
+                return JsonResponse({'valid' : 0, 'winner' : None})
             move.game = game
             # Comprobamos si el movimiento es completamente válido en cuanto
             # a modelo y lógica
             try:
                 move.save()
             except ValidationError:
-                return JsonResponse({'valid' : 0})
-            return JsonResponse({'valid' : 1})
+                return JsonResponse({'valid' : 0, 'winner' : None})
+            return JsonResponse({'valid' : 1, 'winner' : Game.finish(game)})
         else:
             # Imprimimos los errores del formulario
-            return JsonResponse({'valid' : 0})
+            return JsonResponse({'valid' : 0, 'winner' : None})
     # No debería ser posible acceder a esta función mediante un método distinto
     # de POST
     else:
-        return JsonResponse({'valid' : 0})
+        return JsonResponse({'valid' : 0, 'winner' : None})
 
 
 @login_required
