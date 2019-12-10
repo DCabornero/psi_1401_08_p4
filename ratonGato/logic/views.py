@@ -245,6 +245,11 @@ def select_game(request, type, game_id=None):
 @login_required
 def show_game(request, type):
     # Author: Sergio Galán
+    if type == 'reproduce':
+        if 'step' in request.session:
+            del request.session['step']
+        if 'direction' in request.session:
+            del request.session['direction']
     context_dict = {}
     # Comprobamos si el usuario ha seleccionado un juego previamente
     if constants.GAME_SELECTED_SESSION_ID not in request.session:
@@ -301,7 +306,7 @@ def move(request):
     else:
         return JsonResponse({'valid' : 0, 'winner' : None})
 
-
+# Endpoint para reproduccion
 @login_required
 def get_move(request):
     # Author: Sergio Galán
@@ -351,7 +356,7 @@ def get_move(request):
     request.session.modified = True
     return JsonResponse(ret_json)
 
-
+# Endpoint para juego ACTIVE
 @login_required
 def current_move(request):
     # Author: David Cabornero

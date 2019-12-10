@@ -27,6 +27,7 @@ http://www.templatemo.com/tm-473-november
 --------------------------------------------*/
 var timeoutRet = null;
 var timeoutUpdate = null;
+var flag = 0;
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -65,6 +66,7 @@ function nextb(){
         if(timeoutRet != null){
           clearInterval(timeoutRet);
           timeoutRet = null;
+          flag = 0;
         }
       }
       $("#prevbutton").attr("disabled", false);
@@ -281,7 +283,6 @@ $(document).ready(function(){
 
   $('#nextbutton').click(nextb);
 
-  var flag = 0;
   $('#autoplay').click(function(){
     if(flag == 0){
       timeoutRet = setInterval(nextb,2000);

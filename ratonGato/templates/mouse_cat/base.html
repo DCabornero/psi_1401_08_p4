@@ -75,7 +75,7 @@ http://www.templatemo.com/tm-473-november
                                 <span class="menu-item-bg"></span>
                             </li>
                             <li>
-                              <a href="{% url 'logout' %}">Welcome <b>{{ request.user.username }}</b>!<br>Logout</a>
+                              <a href="{% url 'logout' %}">Welcome <b>{{request.user.username|truncatechars:9}}</b>!<br>Logout</a>
                               <span class="menu-item-bg"></span>
                             </li>
                       {% else %}
