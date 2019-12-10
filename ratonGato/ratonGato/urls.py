@@ -18,6 +18,7 @@ from django.urls import path
 from logic import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.conf.urls import handler404, handler500
 
 urlpatterns = [
     path('', views.index, name='landing'),
@@ -34,7 +35,9 @@ urlpatterns = [
     path('move/', views.move, name='move'),
     path('get_move/', views.get_move, name='get_move'),
     path('current_move/', views.current_move, name='current_move'),
-    path('errorHTTP/', views.errorHTTP, name='errorHTTP'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+handler404 = views.mi_404
+handler500 = views.mi_404
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

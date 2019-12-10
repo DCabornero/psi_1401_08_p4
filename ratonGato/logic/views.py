@@ -38,6 +38,8 @@ def errorHTTP(request, exception=None):
     Counter.objects.inc()
     return render(request, "mouse_cat/error.html", context_dict, status=404)
 
+def mi_404(request):
+    return errorHTTP(request, "Invalid url")
 
 def index(request):
     return render(request, 'mouse_cat/index.html')
@@ -245,6 +247,8 @@ def select_game(request, type, game_id=None):
 @login_required
 def show_game(request, type):
     # Author: Sergio Galán
+    if type != 'reproduce' and type != 'play' and type != 'join':
+        return errorHTTP(request, "Invalid url")
     if type == 'reproduce':
         if 'step' in request.session:
             del request.session['step']

@@ -30,7 +30,7 @@ DATABASE_DIR = 'postgres://alumnodb:alumnodb@localhost:5432/ratongato'
 SECRET_KEY = 'a6x9fuj775t^m!d8l!-=(7$7&)l6yrrjtigu$c91w86$05detx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 PASS_VAL = 'django.contrib.auth.password_validation.'
 
