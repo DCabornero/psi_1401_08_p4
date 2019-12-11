@@ -38,7 +38,10 @@ def errorHTTP(request, exception=None):
     Counter.objects.inc()
     return render(request, "mouse_cat/error.html", context_dict, status=404)
 
-def mi_404(request):
+def mi_404(request, exception):
+    return errorHTTP(request, "Invalid url")
+
+def mi_500(request):
     return errorHTTP(request, "Invalid url")
 
 def index(request):
@@ -181,10 +184,12 @@ def create_game(request):
 
 
 @login_required
-def select_game(request, type, game_id=None):
+def select_game(request, type, game_id=None, extrafilter=None):
     # Author: Sergio Galán
     context_dict = {}
     u = request.user
+    if type == 'join' and extrafilter:
+        return errorHTTP(request, "Invalid url.")
     if game_id is not None:
         try:
             g = Game.objects.get(pk=game_id)
@@ -221,7 +226,14 @@ def select_game(request, type, game_id=None):
         if type == "play":
             as_cat = Game.objects.filter(status=GameStatus.ACTIVE, cat_user=u)
             as_mouse = Game.objects.filter(status=GameStatus.ACTIVE, mouse_user=u)
-            paginator = Paginator(list(as_cat)+list(as_mouse), 5)
+            if extrafilter == 'ascats':
+                paginator = Paginator(list(as_cat), 5)
+                context_dict['extrafilter'] = 'ascats'
+            elif extrafilter == 'asmouse':
+                paginator = Paginator(list(as_mouse), 5)
+                context_dict['extrafilter'] = 'asmouse'
+            else:
+                paginator = Paginator(list(as_cat)+list(as_mouse), 5)
             page = request.GET.get('page', default=1)
             context_dict['games'] = paginator.get_page(page)
             context_dict['type'] = 'play'
@@ -236,7 +248,14 @@ def select_game(request, type, game_id=None):
         elif type == "reproduce":
             as_cat = Game.objects.filter(status=GameStatus.FINISHED, cat_user=u)
             as_mouse = Game.objects.filter(status=GameStatus.FINISHED, mouse_user=u)
-            paginator = Paginator(list(as_cat)+list(as_mouse), 5)
+            if extrafilter == 'ascats':
+                paginator = Paginator(list(as_cat), 5)
+                context_dict['extrafilter'] = 'ascats'
+            elif extrafilter == 'asmouse':
+                paginator = Paginator(list(as_mouse), 5)
+                context_dict['extrafilter'] = 'asmouse'
+            else:
+                paginator = Paginator(list(as_cat)+list(as_mouse), 5)
             page = request.GET.get('page', default=1)
             context_dict['games'] = paginator.get_page(page)
             context_dict['type'] = 'reproduce'

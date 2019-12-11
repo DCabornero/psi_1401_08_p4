@@ -31,6 +31,7 @@ urlpatterns = [
     path('create_game/', views.create_game, name='create_game'),
     path('select_game/<str:type>', views.select_game, name='select_game'),
     path('select_game/<str:type>/<int:game_id>', views.select_game, name='select_game'),
+    path('select_game/<str:type>/<str:extrafilter>', views.select_game, name='select_game'),
     path('show_game/<str:type>', views.show_game, name='show_game'),
     path('move/', views.move, name='move'),
     path('get_move/', views.get_move, name='get_move'),
@@ -38,6 +39,6 @@ urlpatterns = [
 ]
 
 handler404 = views.mi_404
-handler500 = views.mi_404
+handler500 = views.mi_500
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

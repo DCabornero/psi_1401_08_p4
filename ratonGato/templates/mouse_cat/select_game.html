@@ -7,6 +7,18 @@
   <div class="Center">
     <h2>{{ type }} game</h2>
     {% if games %}
+    {% if type == 'join' %}
+    {% else %}
+      <p>Filter by:
+        {% if extrafilter == 'ascats' %}
+          <a href="{% url 'select_game' type %}">All</a>|As Cats|<a href="{% url 'select_game' type 'asmouse' %}">As Mouse</a>
+        {% elif extrafilter == 'asmouse'%}
+          <a href="{% url 'select_game' type %}">All</a>|<a href="{% url 'select_game' type 'ascats' %}">As Cats</a>|As Mouse
+        {% else %}
+          All|<a href="{% url 'select_game' type 'ascats' %}">As Cats</a>|<a href="{% url 'select_game' type 'asmouse' %}">As Mouse</a>
+        {% endif %}
+      </p>
+    {% endif %}
           <ul>
             {% for game in games %}
               <li>
@@ -29,8 +41,8 @@
                     </a></th>
                   </tr>
                   <tr>
-                    <td class="tg-c3ow" rowspan="2"><img src="{% static 'img/resizemouse.png' %}" alt="Mouseimg"></td>
                     <td class="tg-c3ow" rowspan="2"><img src="{% static 'img/resizecat.png' %}" alt="Catimg"></td>
+                    <td class="tg-c3ow" rowspan="2"><img src="{% static 'img/resizemouse.png' %}" alt="Mouseimg"></td>
                   </tr>
                   <tr>
 
