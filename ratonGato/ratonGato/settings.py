@@ -34,7 +34,7 @@ DEBUG = False
 
 PASS_VAL = 'django.contrib.auth.password_validation.'
 
-ALLOWED_HOSTS = [u'sleepy-coast-56591.herokuapp.com', LH, u'127.0.0.1']
+ALLOWED_HOSTS = [u'shrouded-citadel-98883.herokuapp.com', LH, u'127.0.0.1']
 
 LOGIN_URL = 'login'
 

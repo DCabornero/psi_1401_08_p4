@@ -17,8 +17,8 @@
                 <blockquote class="cat">
                     {% if game.cat_turn %}
                     {% else %}
-                        <p>Waiting for the mouse...
-                        <a style="margin-left:20px;font-weight:normal" href="{% url 'show_game' type %}">Refresh</a></p>
+                        <p>Waiting for the mouse...</p>
+                        <img style="display:block;margin-left:auto;margin-right:auto;height:30px;width:30px;" src="{% static 'img/loading.gif' %}" alt="Loading...">
                     {% endif %}
                 </blockquote>
             {% endif %}

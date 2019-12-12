@@ -69,10 +69,12 @@
         {% endif %}
     </span>
 </div>
+<br><br><br><br><br>
     {% else %}
         <p>Sorry, there is no game you can {{type}}.</p>
+        <p><i class="fa fa-arrow-left"></i><a href="{% url 'landing' %}">Return to homepage</a></p>
+        <br><br><br><br><br><br><br><br><br><br><br><br>
     {% endif %}
-    <p><i class="fa fa-arrow-left"></i><a href="{% url 'landing' %}">Return to homepage</a></p>
   </div>
 </div>
 {% endblock content %}
