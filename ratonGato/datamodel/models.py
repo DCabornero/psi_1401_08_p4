@@ -82,7 +82,6 @@ class Game(models.Model):
                          [m[0]-1, (m[1]+1) % (Game.ROW_LEN + 1)],
                          [m[0]+1, (m[1]-1) % (Game.ROW_LEN + 1)],
                          [m[0]+1, (m[1]+1) % (Game.ROW_LEN + 1)]]
-        valid_targets_filtered = []
         is_mouse_notloser = 0
         for t in valid_targets:
             flag = 0
@@ -118,7 +117,8 @@ class Game(models.Model):
                              [cat[0]+1, (cat[1]+1) % (Game.ROW_LEN + 1)]]
             for t in valid_targets:
                 if t[0] <= Game.COL_LEN and t[0] >= 1 and t[1] != 0:
-                    # Comprobamos si los posibles movimientos están ocupados por otras entidades
+                    # Comprobamos si los posibles movimientos están ocupados
+                    # por otras entidades
                     if t not in others:
                         return None
             others.append(cat)

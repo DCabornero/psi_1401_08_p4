@@ -17,7 +17,8 @@ class SignupForm(forms.ModelForm):
     password = forms.CharField(validators=[MinLengthValidator(6,
                                            SIGNUP_ERROR_AUTH_PASSWORD)],
                                widget=forms.PasswordInput())
-    password2 = forms.CharField(label='Repeat Password', widget=forms.PasswordInput())
+    password2 = forms.CharField(label='Repeat Password',
+                                widget=forms.PasswordInput())
 
     class Meta:
         model = User

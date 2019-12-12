@@ -38,11 +38,14 @@ def errorHTTP(request, exception=None):
     Counter.objects.inc()
     return render(request, "mouse_cat/error.html", context_dict, status=404)
 
+
 def mi_404(request, exception):
     return errorHTTP(request, "Invalid url")
 
+
 def mi_500(request):
     return errorHTTP(request, "Invalid url")
+
 
 def index(request):
     return render(request, 'mouse_cat/index.html')
@@ -194,28 +197,42 @@ def select_game(request, type, game_id=None, extrafilter=None):
         try:
             g = Game.objects.get(pk=game_id)
         except Game.DoesNotExist:
-            return errorHTTP(request, "Game number {0} does not exist, please try again.".format(game_id))
+            return errorHTTP(request,
+                             "Game number {0} does not exist, \
+                             please try again.".format(game_id))
         if type == "play":
             if g.cat_user.id != u.id and g.mouse_user.id != u.id:
-                return errorHTTP(request, "You are not a player of game number {0}, please try again.".format(game_id))
+                return errorHTTP(request,
+                                 "You are not a player of game number {0}, \
+                                 please try again.".format(game_id))
             if g.status != GameStatus.ACTIVE:
-                return errorHTTP(request, "Game number {0} is not active, you can't play. Please try again.".format(game_id))
+                return errorHTTP(request,
+                                 "Game number {0} is not active, you can't \
+                                 play. Please try again.".format(game_id))
             request.session[constants.GAME_SELECTED_SESSION_ID] = g.id
             return(redirect(reverse('show_game', args=(type,))))
         if type == "join":
             if g.mouse_user:
-                return errorHTTP(request, "Game number {0} is already full, please try again.".format(game_id))
+                return errorHTTP(request, "Game number {0} is already full, \
+                                           please try again.".format(game_id))
             if g.cat_user.id == u.id:
-                return errorHTTP(request, "You can't join a game you created, please try again.".format(game_id))
+                return errorHTTP(request,
+                                 "You can't join a game you \
+                                 created, please try again.".format(game_id))
             g.mouse_user = u
             g.save()
             request.session[constants.GAME_SELECTED_SESSION_ID] = g.id
             return(redirect(reverse('show_game', args=("play",))))
         if type == 'reproduce':
             if g.cat_user.id != u.id and g.mouse_user.id != u.id:
-                return errorHTTP(request, "You are not a player of game number {0}, please try again.".format(game_id))
+                return errorHTTP(request,
+                                 "You are not a player of game number {0}, \
+                                 please try again.".format(game_id))
             if g.status != GameStatus.FINISHED:
-                return errorHTTP(request, "Game number {0} is not finished, you can't reproduce it. Please try again.".format(game_id))
+                return errorHTTP(request,
+                                 "Game number {0} is not finished, you can't \
+                                 reproduce it. Please try \
+                                 again.".format(game_id))
             request.session[constants.GAME_SELECTED_SESSION_ID] = g.id
             if 'step' in request.session:
                 del request.session['step']
@@ -225,7 +242,8 @@ def select_game(request, type, game_id=None, extrafilter=None):
     else:
         if type == "play":
             as_cat = Game.objects.filter(status=GameStatus.ACTIVE, cat_user=u)
-            as_mouse = Game.objects.filter(status=GameStatus.ACTIVE, mouse_user=u)
+            as_mouse = Game.objects.filter(status=GameStatus.ACTIVE,
+                                           mouse_user=u)
             if extrafilter == 'ascats':
                 paginator = Paginator(list(as_cat), 5)
                 context_dict['extrafilter'] = 'ascats'
@@ -239,15 +257,17 @@ def select_game(request, type, game_id=None, extrafilter=None):
             context_dict['type'] = 'play'
             return render(request, "mouse_cat/select_game.html", context_dict)
         elif type == "join":
-            available = Game.objects.filter(status=GameStatus.CREATED).exclude(cat_user=u)
-            paginator = Paginator(list(available), 5)
+            created = GameStatus.CREATED
+            av = Game.objects.filter(status=created).exclude(cat_user=u)
+            paginator = Paginator(list(av), 5)
             page = request.GET.get('page', default=1)
             context_dict['games'] = paginator.get_page(page)
             context_dict['type'] = 'join'
             return render(request, "mouse_cat/select_game.html", context_dict)
         elif type == "reproduce":
-            as_cat = Game.objects.filter(status=GameStatus.FINISHED, cat_user=u)
-            as_mouse = Game.objects.filter(status=GameStatus.FINISHED, mouse_user=u)
+            finished = GameStatus.FINISHED
+            as_cat = Game.objects.filter(status=finished, cat_user=u)
+            as_mouse = Game.objects.filter(status=finished, mouse_user=u)
             if extrafilter == 'ascats':
                 paginator = Paginator(list(as_cat), 5)
                 context_dict['extrafilter'] = 'ascats'
@@ -312,22 +332,23 @@ def move(request):
                 pk = request.session[constants.GAME_SELECTED_SESSION_ID]
                 game = Game.objects.get(pk=pk)
             except KeyError:
-                return JsonResponse({'valid' : 0, 'winner' : None})
+                return JsonResponse({'valid': 0, 'winner': None})
             move.game = game
             # Comprobamos si el movimiento es completamente válido en cuanto
             # a modelo y lógica
             try:
                 move.save()
             except ValidationError:
-                return JsonResponse({'valid' : 0, 'winner' : None})
-            return JsonResponse({'valid' : 1, 'winner' : Game.finish(game)})
+                return JsonResponse({'valid': 0, 'winner': None})
+            return JsonResponse({'valid': 1, 'winner': Game.finish(game)})
         else:
             # Imprimimos los errores del formulario
-            return JsonResponse({'valid' : 0, 'winner' : None})
+            return JsonResponse({'valid': 0, 'winner': None})
     # No debería ser posible acceder a esta función mediante un método distinto
     # de POST
     else:
-        return JsonResponse({'valid' : 0, 'winner' : None})
+        return JsonResponse({'valid': 0, 'winner': None})
+
 
 # Endpoint para reproduccion
 @login_required
@@ -348,26 +369,26 @@ def get_move(request):
     else:
         step = 0
     game_id = request.session[constants.GAME_SELECTED_SESSION_ID]
-    moves = Move.objects.filter(game__id = game_id).order_by('date')
+    moves = Move.objects.filter(game__id=game_id).order_by('date')
     if step >= len(list(moves)) or step < 0:
         return errorHTTP(request, "Unexpected error, please try again!")
     try:
         curr_move = list(moves)[step]
-    except:
+    except Exception as e:
         return errorHTTP(request, "Unexpected error, please try again!")
     if shift == 1:
         ret_json = {
-            'origin' : curr_move.origin,
-            'target' : curr_move.target,
-            'previous' : True,
-            'next' : True
+            'origin': curr_move.origin,
+            'target': curr_move.target,
+            'previous': True,
+            'next': True
         }
     else:
         ret_json = {
-            'origin' : curr_move.target,
-            'target' : curr_move.origin,
-            'previous' : True,
-            'next' : True
+            'origin': curr_move.target,
+            'target': curr_move.origin,
+            'previous': True,
+            'next': True
         }
     if step == 0 and shift == -1:
         ret_json['previous'] = False
@@ -379,6 +400,7 @@ def get_move(request):
     request.session.modified = True
     return JsonResponse(ret_json)
 
+
 # Endpoint para juego ACTIVE
 @login_required
 def current_move(request):
@@ -386,7 +408,7 @@ def current_move(request):
     if request.method != 'POST':
         return errorHTTP(request, "GET not allowed")
     game_id = request.session[constants.GAME_SELECTED_SESSION_ID]
-    moves = Move.objects.filter(game__id = game_id).order_by('-date')
+    moves = Move.objects.filter(game__id=game_id).order_by('-date')
     if len(list(moves)) == 0:
         ret_json = {
             'origin': 0,
