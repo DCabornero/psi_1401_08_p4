@@ -16,6 +16,7 @@
             {% if game.cat_user.id == request.user.id %}
                 <blockquote class="cat">
                     {% if game.cat_turn %}
+                        <p><b>Your turn!!!!</b></p>
                     {% else %}
                         <p>Waiting for the mouse...</p>
                         <img style="display:block;margin-left:auto;margin-right:auto;height:30px;width:30px;" src="{% static 'img/loading.gif' %}" alt="Loading...">
@@ -28,9 +29,10 @@
             {% if game.mouse_user.id == request.user.id %}
                 <blockquote class="mouse">
                     {% if not game.cat_turn %}
+                      <p><b>Your turn!!!!</b></p>
                     {% else %}
-                        <p>Waiting for the cat...
-                        <a style="margin-left:20px;font-weight:normal" href="{% url 'show_game' type %}">Refresh</a></p>
+                        <p>Waiting for the cat...</p>
+                        <img style="display:block;margin-left:auto;margin-right:auto;height:30px;width:30px;" src="{% static 'img/loading.gif' %}" alt="Loading...">
                     {% endif %}
                 </blockquote>
             {% endif %}
@@ -108,6 +110,8 @@
       {% endfor %}
       </table>
     {% endif %}
+
+    <p id="result"></p>
 
     <p><i class="fa fa-arrow-left"></i><a href="{% url 'landing' %}">Return to homepage</a></p>
   </div>

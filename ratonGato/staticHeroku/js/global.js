@@ -61,6 +61,7 @@ function nextb(){
       $('#cell_'.concat(data['origin'].toString())).html('');
       $('#cell_'.concat(data['target'].toString())).html(previmg);
       if(data['next'] != true){
+        $("#result").html("<b>Game finished!!</b>")
         $("#nextbutton").attr("disabled", true);
         $("#autoplay").attr("disabled", true);
         if(timeoutRet != null){
@@ -84,6 +85,9 @@ function updateGame(){
       var target = data['target']
       if(waiting_for_cat && data['last_move'] == 'cat'){
         $("blockquote[class='mouse']").html("");
+        if(data['winner'] == 'None'){
+          $("blockquote[class='mouse']").html("<p><b>Your turn!!!!</b></p>");
+        }
         var previmg = $('#cell_'.concat(origin.toString())).html();
         $('#cell_'.concat(origin.toString())).html('');
         $('#cell_'.concat(target.toString())).html(previmg);
@@ -100,6 +104,9 @@ function updateGame(){
       }
       else if(waiting_for_mouse && data['last_move'] == 'mouse'){
         $("blockquote[class='cat']").html("");
+        if(data['winner'] == 'None'){
+          $("blockquote[class='cat']").html("<p><b>Your turn!!!!</b></p>");
+        }
         var previmg = $('#cell_'.concat(origin.toString())).html();
         $('#cell_'.concat(origin.toString())).html('');
         $('#cell_'.concat(target.toString())).html(previmg);
@@ -117,9 +124,11 @@ function updateGame(){
       if(data['winner'] == 'cat'){
         if(waiting_for_mouse){
           alert("You win!!!!");
+          $("#result").html('<b>You win!!!!</b>')
         }
         else{
           alert("You lose :(");
+          $("#result").html('<b>You lose :(</b>')
         }
         clearInterval(timeoutUpdate);
         timeoutUpdate = null;
@@ -127,9 +136,11 @@ function updateGame(){
       if(data['winner'] == 'mouse'){
         if(waiting_for_cat){
           alert("You win!!!!");
+          $("#result").html('<b>You win!!!!</b>')
         }
         else{
           alert("You lose :(");
+          $("#result").html('<b>You lose :(</b>')
         }
         clearInterval(timeoutUpdate);
         timeoutUpdate = null;
@@ -224,17 +235,21 @@ $(document).ready(function(){
             if(data['winner'] == "cat"){
               if(previmg.includes("Cat")){
                 alert('You win!!!!')
+                $("#result").html('<b>You win!!!!</b>')
               }
               else{
                 alert('You lose :(')
+                $("#result").html('<b>You lose :(</b>')
               }
             }
             else if(data['winner'] == "mouse"){
               if(previmg.includes("Cat")){
                 alert('You lose :(')
+                $("#result").html('<b>You lose :(</b>')
               }
               else{
                 alert('You win!!!!')
+                $("#result").html('<b>You win!!!!</b>')
               }
             }
             else{
@@ -242,11 +257,11 @@ $(document).ready(function(){
             }
             if(previmg.includes("Cat") && data['winner'] == null){
               $(".draggable[alt='Cat']").draggable().draggable('disable');
-              $("blockquote[class='cat']").html("<p>Waiting for the mouse...<a style='margin-left:20px;font-weight:normal' href='javascript:window.location.reload(true)'>Refresh</a></p>")
+              $("blockquote[class='cat']").html("<p>Waiting for the mouse...</p><img style='display:block;margin-left:auto;margin-right:auto;height:30px;width:30px;' src=" + loading_gif + " alt='Loading...'>")
             }
             else if(previmg.includes("Mouse") && data['winner'] == null){
               $(".draggable[alt='Mouse']").draggable().draggable('disable');
-              $("blockquote[class='mouse']").html("<p>Waiting for the cat...<a style='margin-left:20px;font-weight:normal' href='javascript:window.location.reload(true)'>Refresh</a></p>")
+              $("blockquote[class='mouse']").html("<p>Waiting for the cat...</p><img style='display:block;margin-left:auto;margin-right:auto;height:30px;width:30px;' src=" + loading_gif + " alt='Loading...'>")
             }
             else{
               $("blockquote[class='cat']").html("")
@@ -277,6 +292,7 @@ $(document).ready(function(){
         }
         $("#nextbutton").attr("disabled", false);
         $("#autoplay").attr("disabled", false);
+        $("#result").html("");
       }
     })
   });

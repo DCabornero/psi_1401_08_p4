@@ -387,6 +387,14 @@ def current_move(request):
         return errorHTTP(request, "GET not allowed")
     game_id = request.session[constants.GAME_SELECTED_SESSION_ID]
     moves = Move.objects.filter(game__id = game_id).order_by('-date')
+    if len(list(moves)) == 0:
+        ret_json = {
+            'origin': 0,
+            'target': 0,
+            'last_move': 'None',
+            'winner': 'None'
+        }
+        return JsonResponse(ret_json)
     curr_move = list(moves)[0]
     if curr_move.game.cat_turn is True:
         last_player = 'mouse'
