@@ -10,6 +10,7 @@ MSG_ERROR_MOVE = "Move not allowed|Movimiento no permitido"
 MSG_ERROR_NEW_COUNTER = "Insert not allowed|Inseción no permitida"
 
 
+# Clase encargada de indicar el estado del juego: creado, en proceso o acabado
 class GameStatus(models.IntegerField):
     # Definimos los posibles estados del juego
     CREATED = 0
@@ -24,6 +25,9 @@ class GameStatus(models.IntegerField):
         super().__init__(*args, **kwargs)
 
 
+# Clase encargada de llevar todos los datos necesarios para tener bien
+# definido el juego. Guarda el número de casillas, los usuarios que son gato y
+# ratón, la posición de los gatos y el ratón en el juego y el turno.
 class Game(models.Model):
     # Características básicas del tablero
     MIN_CELL = 0
@@ -174,7 +178,9 @@ class Game(models.Model):
             res = res + str(self.mouse) + ')'
         return res
 
-
+# Clase encargada de dejar bien definido un movimiento dentro de una partida.
+# Por tanto, tiene el Game al que se refiere, la casilla origen y la destino,
+# y el jugador que se mueve.
 class Move(models.Model):
     # Definimos los campos necesarios para implementar la funcionalidad
     origin = models.IntegerField(blank=True)

@@ -39,18 +39,22 @@ def errorHTTP(request, exception=None):
     return render(request, "mouse_cat/error.html", context_dict, status=404)
 
 
+# Handler del error 404
 def mi_404(request, exception):
     return errorHTTP(request, "Invalid url")
 
 
+# Handler del error 500
 def mi_500(request):
     return errorHTTP(request, "Invalid url")
 
 
+# Página principal
 def index(request):
     return render(request, 'mouse_cat/index.html')
 
 
+# Página devuelta cuando se solicita login (solo para usuarios no registrados)
 @anonymous_required
 def login(request):
     # Author: David Cabornero
@@ -87,6 +91,7 @@ def login(request):
         return render(request, "mouse_cat/login.html", context_dict)
 
 
+# Página devuelta si un usuario logged se quiere volver anónimo
 @login_required
 def logout(request):
     # Author: Sergio Galán
@@ -99,6 +104,7 @@ def logout(request):
     return render(request, "mouse_cat/logout.html", context_dict)
 
 
+# Página devuelta si un usuario no logueado quiere registrarse
 @anonymous_required
 def signup(request):
     # Author: Sergio Galán
@@ -137,6 +143,7 @@ def signup(request):
         return render(request, "mouse_cat/signup.html", context_dict)
 
 
+# Página devuelta cuando se quiere mostrar la variable global counter
 def counter(request):
     # Author: David Cabornero
     context_dict = {}
@@ -153,6 +160,7 @@ def counter(request):
     return render(request, "mouse_cat/counter.html", context_dict)
 
 
+# Página devuelta cuando un usuario registrado quiere crear un juego
 @login_required
 def create_game(request):
     # Author: Sergio Galán
@@ -165,74 +173,83 @@ def create_game(request):
     return render(request, "mouse_cat/new_game.html", context_dict)
 
 
-# @login_required
-# def join_game(request):
-#     # Author: David Cabornero
-#     context_dict = {}
-#     try:
-#         # Buscamos el juego con id más alto con status CREATED en el que
-#         # nuestro usuario no es el gato
-#         game = Game.objects.filter(mouse_user__isnull=True).exclude(
-#                                    cat_user=request.user).order_by('-id')[0]
-#     except IndexError:
-#         # Si no hay juego disponible, informamos al usuario
-#         context_dict['msg_error'] = 'Sorry, there is no available game. \
-#                                      Try creating one yourself!'
-#         return render(request, "mouse_cat/join_game.html", context_dict)
-#     # Actualizamos los datos del juego
-#     game.mouse_user = request.user
-#     game.save()
-#     context_dict['game'] = game
-#     return render(request, "mouse_cat/join_game.html", context_dict)
-
-
+# Página devuelta cuando un usuario quiere seleccionar un juego creado
+# Sirve tanto para las páginas de join game, reproduce game y play game
 @login_required
 def select_game(request, type, game_id=None, extrafilter=None):
     # Author: Sergio Galán
     context_dict = {}
     u = request.user
+    # Solo podemos tener filtros de cat y mouse en reproduce y play
     if type == 'join' and extrafilter:
         return errorHTTP(request, "Invalid url.")
+    # Analizamos el caso donde ya se haya seleccionado el juego
     if game_id is not None:
+        # Debería existir el juego que se pide (si no algo raro está haciedo
+        # el usuario, pero lo controlamos igual)
         try:
             g = Game.objects.get(pk=game_id)
         except Game.DoesNotExist:
             return errorHTTP(request,
                              "Game number {0} does not exist, \
                              please try again.".format(game_id))
+        # Caso 1: está en play game
         if type == "play":
+            # El usuario no es jugador en esta partida, está haciendo (algo
+            # no permitido desde nuestro formulario, pero lo controlamos
+            # igual para evitar malas intenciones)
             if g.cat_user.id != u.id and g.mouse_user.id != u.id:
                 return errorHTTP(request,
                                  "You are not a player of game number {0}, \
                                  please try again.".format(game_id))
+            # El juego no es jugable, o bien ha acabado o no ha empezado (algo
+            # no permitido desde nuestro formulario, pero lo controlamos
+            # igual para evitar malas intenciones)
             if g.status != GameStatus.ACTIVE:
                 return errorHTTP(request,
                                  "Game number {0} is not active, you can't \
                                  play. Please try again.".format(game_id))
+            # Caso legal
             request.session[constants.GAME_SELECTED_SESSION_ID] = g.id
             return(redirect(reverse('show_game', args=(type,))))
+        # Caso 2: está en join game
         if type == "join":
+            # Nos estamos intentando unir a un juego que ya tiene un ratón,
+            # ya sea porque el cliente se ha fabricado su formulario o bien
+            # porque alguien se ha unido a un juego antes que nuestro usuario
             if g.mouse_user:
                 return errorHTTP(request, "Game number {0} is already full, \
                                            please try again.".format(game_id))
+            # Nos estamos intentando unir a un juego en el que somos gato
+            # también. (algo no permitido desde nuestro formulario,
+            # pero lo controlamos igual para evitar malas intenciones)
             if g.cat_user.id == u.id:
                 return errorHTTP(request,
                                  "You can't join a game you \
                                  created, please try again.".format(game_id))
+            # Caso legal
             g.mouse_user = u
             g.save()
             request.session[constants.GAME_SELECTED_SESSION_ID] = g.id
             return(redirect(reverse('show_game', args=("play",))))
+        #Caso 3: está en reproduce game
         if type == 'reproduce':
+            # El usuario está intentando acceder a un juego que no ha jugado
+            # (algo no permitido desde nuestro formulario,
+            # pero lo controlamos igual para evitar malas intenciones)
             if g.cat_user.id != u.id and g.mouse_user.id != u.id:
                 return errorHTTP(request,
                                  "You are not a player of game number {0}, \
                                  please try again.".format(game_id))
+            # El usuario está intentando acceder a un juego que no ha terminado
+            # (algo no permitido desde nuestro formulario,
+            # pero lo controlamos igual para evitar malas intenciones)
             if g.status != GameStatus.FINISHED:
                 return errorHTTP(request,
                                  "Game number {0} is not finished, you can't \
                                  reproduce it. Please try \
                                  again.".format(game_id))
+            # Caso legal
             request.session[constants.GAME_SELECTED_SESSION_ID] = g.id
             if 'step' in request.session:
                 del request.session['step']
