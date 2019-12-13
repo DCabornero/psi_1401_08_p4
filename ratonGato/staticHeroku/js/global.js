@@ -48,6 +48,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
+// Funcionalidad del botón Next de reproduce game
 function nextb(){
   $.ajax({
     url: '/get_move/',
@@ -74,6 +75,8 @@ function nextb(){
     }
   })}
 
+// Funcionalidad que hace todo lo necesario para actualizar un juego cuando
+// estamos en play game
 function updateGame(){
   $.ajax({
     url: '/current_move/',
@@ -125,10 +128,12 @@ function updateGame(){
         if(waiting_for_mouse){
           alert("You win!!!!");
           $("#result").html('<b>You win!!!!</b>')
+          $(".draggable").draggable().draggable('disable');
         }
         else{
           alert("You lose :(");
           $("#result").html('<b>You lose :(</b>')
+          $(".draggable").draggable().draggable('disable');
         }
         clearInterval(timeoutUpdate);
         timeoutUpdate = null;
@@ -137,10 +142,12 @@ function updateGame(){
         if(waiting_for_cat){
           alert("You win!!!!");
           $("#result").html('<b>You win!!!!</b>')
+          $(".draggable").draggable().draggable('disable');
         }
         else{
           alert("You lose :(");
           $("#result").html('<b>You lose :(</b>')
+          $(".draggable").draggable().draggable('disable');
         }
         clearInterval(timeoutUpdate);
         timeoutUpdate = null;
@@ -149,7 +156,7 @@ function updateGame(){
   })
 }
 
-
+// Main del javascript
 $(document).ready(function(){
   var csrftoken = getCookie('csrftoken');
   $.ajaxSetup({
@@ -205,6 +212,7 @@ $(document).ready(function(){
       }
     }
   });
+  // Funcionalidad draggable
   $('.draggable').draggable({
     revert: true,
     containment: "#chess_board",
@@ -212,6 +220,7 @@ $(document).ready(function(){
       $("input[name='origin']").val(parseInt($(this).parent().attr('id').slice(5)));
     }
   });
+  // Funcionalidad droppable
   $('.droppable').droppable({
     drop: function(){
       $("input[name='target']").val(parseInt($(this).attr('id').slice(5)));
@@ -236,20 +245,24 @@ $(document).ready(function(){
               if(previmg.includes("Cat")){
                 alert('You win!!!!')
                 $("#result").html('<b>You win!!!!</b>')
+                $(".draggable").draggable().draggable('disable');
               }
               else{
                 alert('You lose :(')
                 $("#result").html('<b>You lose :(</b>')
+                $(".draggable").draggable().draggable('disable');
               }
             }
             else if(data['winner'] == "mouse"){
               if(previmg.includes("Cat")){
                 alert('You lose :(')
                 $("#result").html('<b>You lose :(</b>')
+                $(".draggable").draggable().draggable('disable');
               }
               else{
                 alert('You win!!!!')
                 $("#result").html('<b>You win!!!!</b>')
+                $(".draggable").draggable().draggable('disable');
               }
             }
             else{
@@ -272,9 +285,11 @@ $(document).ready(function(){
       })
     }}
   );
+  // Al cargar la página, si estamos esperando iniciamos la request periódica
   if($("blockquote[class='mouse']").text().includes('Waiting') || $("blockquote[class='cat']").text().includes('Waiting')){
     timeoutUpdate = setInterval(updateGame, 4000);
   }
+  // Funcionalidad del botón Previous en reproduce game
   $('#prevbutton').click(function(){
     $.ajax({
       url: '/get_move/',
@@ -297,8 +312,10 @@ $(document).ready(function(){
     })
   });
 
+  // Funcionalidad del botón Next en reproduce game
   $('#nextbutton').click(nextb);
 
+  // Funcionalidad del botón autoplay en reproduce game
   $('#autoplay').click(function(){
     if(flag == 0){
       timeoutRet = setInterval(nextb,2000);

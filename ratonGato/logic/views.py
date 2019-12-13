@@ -183,7 +183,8 @@ def select_game(request, type, game_id=None, extrafilter=None):
     # Solo podemos tener filtros de cat y mouse en reproduce y play
     if type == 'join' and extrafilter:
         return errorHTTP(request, "Invalid url.")
-    # Analizamos el caso donde ya se haya seleccionado el juego
+    # Analizamos el caso donde ya se haya seleccionado el juego al que
+    # queremos jugar
     if game_id is not None:
         # Debería existir el juego que se pide (si no algo raro está haciedo
         # el usuario, pero lo controlamos igual)
@@ -232,7 +233,7 @@ def select_game(request, type, game_id=None, extrafilter=None):
             g.save()
             request.session[constants.GAME_SELECTED_SESSION_ID] = g.id
             return(redirect(reverse('show_game', args=("play",))))
-        #Caso 3: está en reproduce game
+        # Caso 3: está en reproduce game
         if type == 'reproduce':
             # El usuario está intentando acceder a un juego que no ha jugado
             # (algo no permitido desde nuestro formulario,
@@ -256,11 +257,18 @@ def select_game(request, type, game_id=None, extrafilter=None):
             if 'direction' in request.session:
                 del request.session['direction']
             return(redirect(reverse('show_game', args=(type,))))
+    # Analizamos el caso donde tengamos que mostrar los juegos
     else:
+        # Caso 1: play game
         if type == "play":
+            # Filtramos los juegos en los que el usuario sea gato o ratón y
+            # estén con status active
             as_cat = Game.objects.filter(status=GameStatus.ACTIVE, cat_user=u)
             as_mouse = Game.objects.filter(status=GameStatus.ACTIVE,
                                            mouse_user=u)
+            # Filtramos si solo queremos juegos en los que el usuario solo
+            # sea gato o ratón
+            # También paginamos de 5 en 5
             if extrafilter == 'ascats':
                 paginator = Paginator(list(as_cat), 5)
                 context_dict['extrafilter'] = 'ascats'
@@ -269,22 +277,33 @@ def select_game(request, type, game_id=None, extrafilter=None):
                 context_dict['extrafilter'] = 'asmouse'
             else:
                 paginator = Paginator(list(as_cat)+list(as_mouse), 5)
+            # Devolvemos lo necesario
             page = request.GET.get('page', default=1)
             context_dict['games'] = paginator.get_page(page)
             context_dict['type'] = 'play'
             return render(request, "mouse_cat/select_game.html", context_dict)
+        # Caso 2: join game
         elif type == "join":
+            # Filtramos por juegos que estén con status created
             created = GameStatus.CREATED
             av = Game.objects.filter(status=created).exclude(cat_user=u)
+            # Paginación de 5 en 5
             paginator = Paginator(list(av), 5)
             page = request.GET.get('page', default=1)
+            # Devolvemos lo necesario
             context_dict['games'] = paginator.get_page(page)
             context_dict['type'] = 'join'
             return render(request, "mouse_cat/select_game.html", context_dict)
+        # Caso 3: reproduce game
         elif type == "reproduce":
+            # Filtramos por los juegos con status finished en los que haya
+            # participado el usuario
             finished = GameStatus.FINISHED
             as_cat = Game.objects.filter(status=finished, cat_user=u)
             as_mouse = Game.objects.filter(status=finished, mouse_user=u)
+            # Si hay un filto extra que indique que solo quiere ver los juegos
+            # en los que haya participado como gato o ratón, lo aplicamos
+            # Paginamos de 5 en 5
             if extrafilter == 'ascats':
                 paginator = Paginator(list(as_cat), 5)
                 context_dict['extrafilter'] = 'ascats'
@@ -293,18 +312,26 @@ def select_game(request, type, game_id=None, extrafilter=None):
                 context_dict['extrafilter'] = 'asmouse'
             else:
                 paginator = Paginator(list(as_cat)+list(as_mouse), 5)
+            # Devolvemos lo necesario
             page = request.GET.get('page', default=1)
             context_dict['games'] = paginator.get_page(page)
             context_dict['type'] = 'reproduce'
             return render(request, "mouse_cat/select_game.html", context_dict)
+    # Caso que se da cuando no se da nada de lo anterior, es decir, con una
+    # URL inválida
     return errorHTTP(request, "Invalid url.")
 
 
+# Página devuelta cuando un usuario registrado quiere ver un juego
 @login_required
 def show_game(request, type):
     # Author: Sergio Galán
+    # Si el usuario ha llegado aquí desde un sitio que no sea ninguno de estos
+    # tres, ha hecho una petición por su cuenta y debemos controlarlo
     if type != 'reproduce' and type != 'play' and type != 'join':
         return errorHTTP(request, "Invalid url")
+    # Si vamos a reproducir una partida, reseteamos las variables encargadas
+    # de indicar en qué momento de la partida estamos
     if type == 'reproduce':
         if 'step' in request.session:
             del request.session['step']
@@ -335,6 +362,7 @@ def show_game(request, type):
     return render(request, "mouse_cat/game.html", context_dict)
 
 
+# Endpoint encargado de notificar un movimiento que se ha llevado a cabo
 @login_required
 def move(request):
     # Author: David Cabornero
@@ -362,19 +390,24 @@ def move(request):
             # Imprimimos los errores del formulario
             return JsonResponse({'valid': 0, 'winner': None})
     # No debería ser posible acceder a esta función mediante un método distinto
-    # de POST
+    # de POST. En caso de que ocurra, hacemos como que no lo hemos visto
     else:
         return JsonResponse({'valid': 0, 'winner': None})
 
 
-# Endpoint para reproduccion
+# Endpoint para reproduccion de un cierto movimiento
 @login_required
 def get_move(request):
     # Author: Sergio Galán
+    # No se debería poder acceder mediante algo distinto de POST. Si tal es el
+    # caso, notificamos error
     if request.method != 'POST':
         return errorHTTP(request, "GET not allowed")
+    # Obtenemos los parámetros del movimiento
     shift = request.POST['shift']
     shift = int(shift)
+    # Obtenemos las variables de sesión que controlan por donde va la
+    # reproducción
     if 'direction' in request.session:
         direction = request.session['direction']
     else:
@@ -385,14 +418,19 @@ def get_move(request):
             step = step + shift
     else:
         step = 0
+    # Obtenemos el juego y el movimiento en el que nos encontramos
     game_id = request.session[constants.GAME_SELECTED_SESSION_ID]
     moves = Move.objects.filter(game__id=game_id).order_by('date')
+    # Si ha ocurrido algo inesperado (Nos salimos de los límites de los
+    # movimientos), devolvemos error
     if step >= len(list(moves)) or step < 0:
         return errorHTTP(request, "Unexpected error, please try again!")
+    # Obtenemos el movimiento
     try:
         curr_move = list(moves)[step]
     except Exception as e:
         return errorHTTP(request, "Unexpected error, please try again!")
+    # Caso 1: queremos avanzar en la reproducción
     if shift == 1:
         ret_json = {
             'origin': curr_move.origin,
@@ -400,6 +438,7 @@ def get_move(request):
             'previous': True,
             'next': True
         }
+    # Caso 2: Queremos retroceder en la reproducción
     else:
         ret_json = {
             'origin': curr_move.target,
@@ -407,25 +446,33 @@ def get_move(request):
             'previous': True,
             'next': True
         }
+    # Si no hay movimientos antes, debemos indicarlo
     if step == 0 and shift == -1:
         ret_json['previous'] = False
+    # Si es el último movimiento y vamos hacia alante, no hay más (next False)
     if step == len(list(moves)) - 1 and shift == 1:
         ret_json['next'] = False
+    # Actualizamos variables de sesión
     if direction is None or direction == shift:
         request.session['step'] = step
     request.session['direction'] = shift
     request.session.modified = True
+    # Devolvemos el resultado
     return JsonResponse(ret_json)
 
 
-# Endpoint para juego ACTIVE
+# Endpoint para juego ACTIVE, que devuelve el último movimiento de un game
 @login_required
 def current_move(request):
     # Author: David Cabornero
+    # Si el método es POST, página de error
     if request.method != 'POST':
         return errorHTTP(request, "GET not allowed")
+    # Obtenemos los movimientos del juego ordenados por fecha
     game_id = request.session[constants.GAME_SELECTED_SESSION_ID]
     moves = Move.objects.filter(game__id=game_id).order_by('-date')
+    # Si la lista es vacía es que no ha habido ningún movimiento, devolvemos
+    # un JSON que indica eso
     if len(list(moves)) == 0:
         ret_json = {
             'origin': 0,
@@ -434,15 +481,19 @@ def current_move(request):
             'winner': 'None'
         }
         return JsonResponse(ret_json)
+    # Obtenemos el último movimiento
     curr_move = list(moves)[0]
+    # Miramos quien ha hecho el último movimiento
     if curr_move.game.cat_turn is True:
         last_player = 'mouse'
     else:
         last_player = 'cat'
+    # Miramos si ha acabado la partida
     if curr_move.game.status == GameStatus.FINISHED:
         winner = Game.finish(curr_move.game)
     else:
         winner = 'None'
+    # Devolvemos el JSON con la información para ser procesada por AJAX
     ret_json = {
         'origin': curr_move.origin,
         'target': curr_move.target,

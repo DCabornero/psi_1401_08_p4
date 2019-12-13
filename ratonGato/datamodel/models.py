@@ -178,6 +178,7 @@ class Game(models.Model):
             res = res + str(self.mouse) + ')'
         return res
 
+
 # Clase encargada de dejar bien definido un movimiento dentro de una partida.
 # Por tanto, tiene el Game al que se refiere, la casilla origen y la destino,
 # y el jugador que se mueve.
