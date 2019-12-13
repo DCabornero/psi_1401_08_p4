@@ -3,18 +3,13 @@ Name                                         Stmts   Miss  Cover   Missing
 ratonGato/datamodel/__init__.py                  0      0   100%
 ratonGato/datamodel/admin.py                     5      0   100%
 ratonGato/datamodel/constants.py                 2      0   100%
-ratonGato/datamodel/models.py                  188      9    95%   150, 232, 243, 250-251, 255-258
-ratonGato/datamodel/tests.py                    20      0   100%
-ratonGato/datamodel/tests_models.py            169      4    98%   73-76
+ratonGato/datamodel/models.py                  188      3    98%   154, 257-258
 ratonGato/logic/__init__.py                      0      0   100%
 ratonGato/logic/forms.py                        25      0   100%
 ratonGato/logic/templatetags/__init__.py         0      0   100%
 ratonGato/logic/templatetags/logic_tags.py       4      1    75%   8
-ratonGato/logic/tests.py                        20      1    95%   32
-ratonGato/logic/tests_additional_P4.py          53      0   100%
-ratonGato/logic/tests_function.py               92      0   100%
-ratonGato/logic/views.py                       270    201    26%   25-30, 43, 47, 51, 57-87, 93-99, 105-137, 142-153, 160-165, 192-283, 289-318, 324-350, 374, 377-378, 408-435
+ratonGato/logic/views.py                       272    114    58%   26, 45, 50, 79-96, 120-125, 138-144, 190, 196-264, 278-279, 281-282, 313-314, 316-317, 327, 336-367, 384-385, 391-392, 396-400, 432, 436-437, 474-508
 ratonGato/ratonGato/__init__.py                  0      0   100%
 ratonGato/ratonGato/urls.py                     12      0   100%
 --------------------------------------------------------------------------
-TOTAL                                          860    216    75%
+TOTAL                                          508    118    77%

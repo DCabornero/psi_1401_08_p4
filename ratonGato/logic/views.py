@@ -35,6 +35,7 @@ def anonymous_required(f):
 def errorHTTP(request, exception=None):
     context_dict = {}
     context_dict[constants.ERROR_MESSAGE_ID] = exception
+    # Incrementamos el contador de peticiones erróneas
     Counter.objects.inc()
     return render(request, "mouse_cat/error.html", context_dict, status=404)
 
@@ -88,6 +89,10 @@ def login(request):
         # Si la petición es un GET, simplemente devolvemos el formulario
         # a rellenar
         context_dict['user_form'] = LoginForm()
+        # Si tiene next en GET, viene de login_required, incrementamos
+        # el counter de errores
+        if 'next' in request.GET:
+            Counter.objects.inc()
         return render(request, "mouse_cat/login.html", context_dict)
 
 
